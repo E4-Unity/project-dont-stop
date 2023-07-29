@@ -138,7 +138,7 @@ public class GameManager : MonoBehaviour
 
     public void GameRetry()
     {
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     // Player
