@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a3a6d7e3f45bbd489fa13b461dfe6dd, type: 3}
+  m_Name: Enemy_00
+  m_EditorClassIdentifier: 
+  m_SpriteLibraryAsset: {fileID: 7108339969198208228, guid: 9be8899d874489841b8d9e77b6b50cda, type: 3}
+  m_Speed: 1
+  m_MaxHealth: 10
