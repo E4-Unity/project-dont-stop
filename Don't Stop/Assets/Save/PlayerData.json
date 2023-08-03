@@ -1,0 +1,44 @@
+{
+    "PlayerData":
+    {
+        "Level": 3,
+        "Exp": 1,
+        "DefinitionID": 0
+    },
+    "CharacterData":
+    [
+        {
+            "Level": 1,
+            "Exp": 2,
+            "DefinitionID": 0
+        }
+    ],
+    "WeaponData":
+    [
+        {
+            "Level": 2,
+            "Exp": 3,
+            "DefinitionID": 0
+        }
+    ],
+    "GearData":
+    [
+        {
+            "Level": 0,
+            "Exp": 2,
+            "DefinitionID": 0
+        },
+        {
+            "Level": 0,
+            "Exp": 1,
+            "DefinitionID": 1
+        }
+    ],
+    "CharacterID": 0,
+    "WeaponID": 0,
+    "GearIDList":
+    [
+        0,
+        1
+    ]
+}

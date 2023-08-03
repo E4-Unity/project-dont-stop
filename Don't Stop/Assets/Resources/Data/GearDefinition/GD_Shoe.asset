@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a874a1e6b68cc846abe9e9f60375ad5, type: 3}
+  m_Name: GD_Shoe
+  m_EditorClassIdentifier: 
+  m_BaseAttribute:
+    m_Attack: 0
+    m_Defense: 0
+    m_MaxHealth: 10
+    m_MovementSpeed: 0
+    m_AttackSpeed: 0
+  m_NextAttributes:
+  - m_Attack: 0
+    m_Defense: 0
+    m_MaxHealth: 1
+    m_MovementSpeed: 0
+    m_AttackSpeed: 0
+  m_NextExp: 0a000000
+  m_ID: 1
+  m_DisplayName: "\uC7A5\uAC11"
+  m_Description: 
+  m_Icon: {fileID: -966295699, guid: d71a3dc7aa20fad4f9a99fc76a9254ba, type: 3}
+  m_GearType: 2

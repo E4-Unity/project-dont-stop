@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1ead483e977f1b478c993b3323183e5, type: 3}
+  m_Name: CD_Farmer
+  m_EditorClassIdentifier: 
+  m_BaseAttribute:
+    Attack: 10
+    Defense: 0
+    MaxHealth: 0
+    MovementSpeed: 0
+    AttackSpeed: 0
+  m_NextAttributes:
+  - Attack: 1
+    Defense: 0
+    MaxHealth: 0
+    MovementSpeed: 0
+    AttackSpeed: 0
+  m_NextExp: 0a000000
+  m_ID: 0
+  m_DisplayName: "\uC300\uB18D\uBD80"
+  m_Description: 
+  m_BaseWeaponID: 0

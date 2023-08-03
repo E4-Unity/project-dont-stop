@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e6e9f96bf9af5c44a636645ee765a88, type: 3}
+  m_Name: PD_Test
+  m_EditorClassIdentifier: 
+  m_BaseAttribute:
+    m_Attack: 10
+    m_Defense: 10
+    m_MaxHealth: 100
+    m_MovementSpeed: 1
+    m_AttackSpeed: 1
+  m_NextAttributes:
+  - m_Attack: 2
+    m_Defense: 2
+    m_MaxHealth: 10
+    m_MovementSpeed: 0.1
+    m_AttackSpeed: 0.1
+  m_NextExp: 0a000000
+  m_ID: 0
+  m_DisplayName: 
+  m_Description: 
+  m_Icon: {fileID: 0}
