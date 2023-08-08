@@ -8,13 +8,15 @@ public class UWeaponAttribute : UAttribute<UWeaponAttribute>
     public float AttackRange;
     public int ProjectileNum;
     public float AttackRate;
+    public int Penetration;
 
     public static UWeaponAttribute operator +(UWeaponAttribute _left, UWeaponAttribute _right) => new UWeaponAttribute()
     {
         Damage = _left.Damage + _right.Damage,
         AttackRange = _left.AttackRange + _right.AttackRange,
         ProjectileNum = _left.ProjectileNum + _right.ProjectileNum,
-        AttackRate = _left.AttackRate + _right.AttackRate
+        AttackRate = _left.AttackRate + _right.AttackRate,
+        Penetration = _left.Penetration + _right.Penetration
     };
 
     public override UWeaponAttribute Add(UWeaponAttribute _other) => new UWeaponAttribute()
@@ -22,6 +24,7 @@ public class UWeaponAttribute : UAttribute<UWeaponAttribute>
         Damage = Damage + _other.Damage,
         AttackRange = AttackRange + _other.AttackRange,
         ProjectileNum = ProjectileNum + _other.ProjectileNum,
-        AttackRate = AttackRate + _other.AttackRate
+        AttackRate = AttackRate + _other.AttackRate,
+        Penetration = Penetration + _other.Penetration
     };
 }

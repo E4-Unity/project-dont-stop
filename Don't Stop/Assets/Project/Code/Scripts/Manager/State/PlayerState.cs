@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerState : GenericMonoSingleton<PlayerState>, ICheckInit
+[RequireComponent(typeof(PlayerInventory), typeof(PlayerEquipment), typeof(PlayerStats))]
+public class PlayerState : GenericMonoSingleton<PlayerState>, ICheckInit, IManager
 {
     #region Components
 
@@ -43,25 +44,48 @@ public class PlayerState : GenericMonoSingleton<PlayerState>, ICheckInit
 
     #region API
 
-    public void SelectCharacter(int _id)
+    public void SelectCharacter(int _id, bool _save = true)
     {
+        var characterData = DataManager.Get().GetCharacterData(_id);
+        if (characterData is null)
+        {
+            print("Selected Character is not exist in Data Manager : " + _id);
+            return;
+        }
+        
         m_CharacterData = DataManager.Get().GetCharacterData(_id);
+        if(_save)
+            DataManager.Get().SaveJsonData();
     }
 
     #endregion
 
     #region Monobehaviour
 
-    protected override void Awake_Implementation()
+    protected override void Awake()
     {
-        base.Awake_Implementation();
+        base.Awake();
         m_InventoryComponent = GetComponent<PlayerInventory>();
         m_EquipmentComponent = GetComponent<PlayerEquipment>();
         m_StatsComponent = GetComponent<PlayerStats>();
     }
 
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            DataManager.Get().SaveJsonData();
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
+        }
+    }
+
     #endregion
 
+    // TODO 제거 예정
     #region ICheckInit
     
     public bool IsInitialized { get; set; }
@@ -70,4 +94,9 @@ public class PlayerState : GenericMonoSingleton<PlayerState>, ICheckInit
     public List<Action> OnInitActions => m_OnInitActions;
 
     #endregion
+
+    public void InitManager()
+    {
+        
+    }
 }

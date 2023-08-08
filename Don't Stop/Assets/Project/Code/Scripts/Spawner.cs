@@ -11,29 +11,49 @@ public class Spawner : MonoBehaviour
 
     // 할당
     Transform[] m_SpawnPoints;
+    
+    // 상태
+    int m_StageLevel;
 
     // 버퍼
     float timer;
-    int level;
+
+    #region Event
+
+    void OnStageStart_Event(int _stageLevel)
+    {
+        m_StageLevel = Mathf.Min(_stageLevel, m_LevelConfig.Length - 1);
+    }
+
+    #endregion
 
     void Awake()
     {
         m_SpawnPoints = GetComponentsInChildren<Transform>();
     }
 
+    void OnEnable()
+    {
+        SurvivalGameManager.Get().OnStageStart += OnStageStart_Event;
+    }
+
+    void OnDisable()
+    {
+        SurvivalGameManager.Get().OnStageStart -= OnStageStart_Event;
+    }
+
     void Update()
     {
         // 게임 정지
-        if (GameManager.Get().IsPaused) return;
+        if (TimeManager.Get().IsPaused) return;
 
         timer += Time.deltaTime;
-        level = Mathf.Min(Mathf.FloorToInt(GameManager.Get().PlayTime / 10f), m_LevelConfig.Length - 1);
 
-        if (timer > m_LevelConfig[level].SpawnTime)
+        if (timer > m_LevelConfig[m_StageLevel].SpawnTime)
         {
-            foreach (var item in m_LevelConfig[level].EnemyConfig)
+            foreach (var spawnData in m_LevelConfig[m_StageLevel].EnemyConfig)
             {
-                Spawn(item);
+                Spawn(spawnData);
             }
             timer = 0;
         }
@@ -41,10 +61,10 @@ public class Spawner : MonoBehaviour
 
     void Spawn(SpawnData _spawnData)
     {
-        GameObject enemy = GameManager.Get().GetPoolManager().GetPool(_spawnData.Prefab).Get(); // 나중에 캐싱
+        Enemy enemy = PoolManager.GetInstance<Enemy>(_spawnData.Prefab);
         enemy.transform.position = m_SpawnPoints[Random.Range(1, m_SpawnPoints.Length)].position;
-        enemy.GetComponent<Enemy>().Init(_spawnData);
-        enemy.SetActive(true);
+        enemy.Init(_spawnData);
+        enemy.gameObject.SetActive(true);
     }
     
     [Serializable]

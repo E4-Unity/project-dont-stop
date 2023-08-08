@@ -16,7 +16,7 @@ public class Reposition : MonoBehaviour
     {
         if (!_other.CompareTag("Area")) return;
 
-        Vector3 playerPos = GameManager.Get().GetPlayer().transform.position;
+        Vector3 playerPos = SurvivalGameManager.Get().GetPlayer().transform.position;
         Vector3 myPos = transform.position;
 
         switch (transform.tag)

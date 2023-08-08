@@ -20,6 +20,7 @@ namespace Framework
                 m_Level = value;
                 OnLevelUpdate?.Invoke(value);
                 NextExp = m_Definition.GetNextExp(m_Level);
+                NextGold = m_Definition.GetNextGold(m_Level);
             }
         }
 
@@ -57,6 +58,23 @@ namespace Framework
             {
                 m_NextExp = value;
                 OnNextExpUpdate?.Invoke(value);
+            }
+        }
+
+        #endregion
+
+        #region NextGold
+
+        [SerializeField] int m_NextGold;
+        public event Action<int> OnNextGoldUpdate;
+        
+        public int NextGold
+        {
+            get => m_NextGold;
+            set
+            {
+                m_NextGold = value;
+                OnNextGoldUpdate?.Invoke(value);
             }
         }
 

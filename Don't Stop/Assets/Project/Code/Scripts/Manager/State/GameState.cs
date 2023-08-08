@@ -1,96 +1,92 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
-public class GameState : GenericMonoSingleton<GameState>
+public abstract class GameState<T> : GenericMonoSingleton<T> where T : GameState<T>
 {
-    #region Components
-
-    PlayerEquipment m_EquipmentComponent;
-    PlayerStats m_StatsComponent;
-
-    PlayerEquipment GetEquipmentComponent() => m_EquipmentComponent;
-    PlayerStats GetStatsComponent() => m_StatsComponent;
-
-    #endregion
-
-    #region Properties
-
-    [SerializeField] int m_Gold;
-
-    public int Gold
-    {
-        get => m_Gold;
-        set => m_Gold = value;
-    }
+    // 씬 로드 전에 생성될 매니저 리스트
+    [SerializeField] GameObject m_ManagerGroup;
+    [SerializeField] EManagerClass[] m_ManagerClasses;
+    GameObject[] m_CreatedManagers;
     
-    [SerializeField] int m_Exp;
+    // 추가된 순서대로 매니저 게임 오브젝트를 SetActive(true)
+    [SerializeField] GameObject[] m_GameObjectsToActivate;
 
-    public int Exp
+    protected abstract void CopyPlayerState();
+    protected abstract void UpdatePlayerState();
+
+    void CreateManagers()
     {
-        get => m_Exp;
-        set => m_Exp = value;
-    }
-    
-    #endregion
-
-    #region Method
-
-    void CopyPlayerState()
-    {
-        var playerEquipment = PlayerState.Get().GetEquipmentComponent();
-        /* Equipment Component Deep Copy */
-        FSavedAttributeData saveData;
+        m_CreatedManagers = new GameObject[m_ManagerClasses.Length];
+        var managerClasses = ManagerClassDictionary.Get(m_ManagerClasses);
         
-        // Weapon
-        UWeaponData weaponCopy = new UWeaponData();
-        playerEquipment.WeaponData.GetSaveData(out saveData);
-        weaponCopy.Init(saveData);
-        m_EquipmentComponent.WeaponData = weaponCopy;
-
-        // Gears
-        foreach (var gearSlot in playerEquipment.GearSlots)
+        for (int i = 0; i < m_ManagerClasses.Length; i++)
         {
-            UGearData gearCopy = new UGearData();
-            gearSlot.Value.GetSaveData(out saveData);
-            gearCopy.Init(saveData);
-            m_EquipmentComponent.GearSlots.Add(gearSlot.Key, gearCopy);
-            m_EquipmentComponent.GearDataList.Add(gearCopy);
+            // 매니저 생성
+            var managerObject = new GameObject(managerClasses[i].Name);
+            managerObject.AddComponent(managerClasses[i]);
+            
+            // 매니저 그룹이 설정되어 있다면 하위 계층으로 이동
+            if (m_ManagerGroup)
+                managerObject.transform.parent = m_ManagerGroup.transform;
+            
+            // 레퍼런스 저장
+            m_CreatedManagers[i] = managerObject;
         }
+        
+        Debug.Log(GetType().Name + " > Create Managers");
     }
 
-    void Init()
+    void DestroyManagers()
+    {
+        var managerClasses = ManagerClassDictionary.Get(m_ManagerClasses);
+        
+        // 생성된 순서의 반대로 파괴
+        for (int i = m_ManagerClasses.Length - 1; i >= 0; i--)
+        {
+            // 매니저 생성
+            var managerObject = new GameObject(managerClasses[i].Name);
+            managerObject.AddComponent(managerClasses[i]);
+            
+            // 매니저 그룹이 설정되어 있다면 하위 계층으로 이동
+            if (m_ManagerGroup)
+                managerObject.transform.parent = m_ManagerGroup.transform;
+        }
+        
+        Debug.Log(GetType().Name + " > Destroy Managers");
+    }
+    
+    void ActivateGameObjects()
+    {
+        for (int i = 0; i < m_GameObjectsToActivate.Length; i++)
+        {
+            m_GameObjectsToActivate[i].SetActive(true);
+        }
+        
+        Debug.Log(GetType().Name + " > Activate Game Objects");
+    }
+
+    void DeactivateGameObjects()
+    {
+        for (int i = m_GameObjectsToActivate.Length - 1; i >= 0; i--)
+        {
+            m_GameObjectsToActivate[i].SetActive(false);
+        }
+        
+        Debug.Log(GetType().Name + " > Deactivate Game Objects");
+    }
+
+    protected virtual void OnEnable()
     {
         CopyPlayerState();
-        GetStatsComponent().Init(GetEquipmentComponent().GearSlots);
+        CreateManagers();
+        ActivateGameObjects();
     }
 
-    #endregion
-
-    #region API
-
-    // TODO GameManager GameOver 이벤트 바인딩?
-    public void UpdateResult()
+    protected virtual void OnDisable()
     {
-        PlayerState.Get().GetInventoryComponent().Gold += Gold;
+        DeactivateGameObjects();
+        DestroyManagers();
+        UpdatePlayerState();
     }
-
-    #endregion
-
-    #region Monobehaviour
-
-    protected override void Awake_Implementation()
-    {
-        base.Awake_Implementation();
-        m_EquipmentComponent = GetComponent<PlayerEquipment>();
-        m_StatsComponent = GetComponent<PlayerStats>();
-    }
-
-    void Start()
-    {
-        PlayerState.Get().TryInit(Init);
-    }
-
-    #endregion
 }

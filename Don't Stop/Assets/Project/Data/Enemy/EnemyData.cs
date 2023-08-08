@@ -15,4 +15,15 @@ public class EnemyData : SerializedScriptableObject
 
     [SerializeField] int m_MaxHealth;
     public int MaxHealth => m_MaxHealth;
+
+    [SerializeField] float m_DropProbability = 0.1f;
+
+    public float DropProbability => m_DropProbability;
+
+    [SerializeField] int m_Gold = 1;
+
+    public int Gold => m_Gold;
+
+    [SerializeField] int m_Exp = 1;
+    public int Exp => m_Exp;
 }

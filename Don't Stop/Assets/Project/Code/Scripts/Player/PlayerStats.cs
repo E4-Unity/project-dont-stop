@@ -1,4 +1,4 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,7 +8,7 @@ public class PlayerStats : MonoBehaviour
 
     [SerializeField] UPlayerData m_PlayerData;
     [SerializeField] UCharacterData m_CharacterData;
-    Dictionary<EGearType, UGearData> m_GearSlots;
+    [SerializeField] PlayerEquipment m_EquipmentComponent;
 
     #endregion
 
@@ -20,13 +20,24 @@ public class PlayerStats : MonoBehaviour
 
     #endregion
 
+    #region Event
+
+    public event Action OnUpdate;
+
+    #endregion
+
     #region API
 
-    public void Init(Dictionary<EGearType, UGearData> _gearSlots)
+    public void Init(PlayerEquipment _equipmentComponent)
     {
         m_PlayerData = PlayerState.Get().PlayerData;
         m_CharacterData = PlayerState.Get().CharacterData;
-        m_GearSlots = _gearSlots;
+        m_EquipmentComponent = _equipmentComponent;
+
+        m_PlayerData.OnLevelUpdate += _i => CalculatePlayerStats();
+        m_CharacterData.OnLevelUpdate += _i => CalculatePlayerStats();
+        m_EquipmentComponent.OnGearUpdate += (_type, _data) => CalculatePlayerStats();
+        m_EquipmentComponent.OnWeaponUpdate += _data => CalculatePlayerStats();
 
         CalculatePlayerStats();
     }
@@ -43,10 +54,12 @@ public class PlayerStats : MonoBehaviour
         m_TotalStats += m_CharacterData.GetAttribute();
         
         // 장비 스탯 반영
-        foreach (var gearSlot in m_GearSlots)
+        foreach (var gearSlot in m_EquipmentComponent.GearSlots)
         {
             m_TotalStats += gearSlot.Value.GetAttribute();
         }
+        
+        OnUpdate?.Invoke();
     }
 
     #endregion

@@ -1,15 +1,11 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
     // 에디터 설정
     [SerializeField] int m_WeaponID;
-    [SerializeField] int m_PrefabID;
+    [SerializeField] GameObject m_BulletPrefab;
     [SerializeField] int m_Damage;
     [SerializeField] int m_Count;
     [SerializeField] float m_Speed;
@@ -30,24 +26,47 @@ public class Weapon : MonoBehaviour
     Player m_Player;
     Scanner m_Scanner;
 
+    void onGameOver_Event()
+    {
+        Destroy(gameObject);
+    }
+
+    void OnGameExit_Event()
+    {
+        Destroy(gameObject);
+    }
+
     void Awake()
     {
-        m_Player = GameManager.Get().GetPlayer();
+        m_Player = SurvivalGameManager.Get().GetPlayer();
+    }
+
+    void OnEnable()
+    {
+        var gameManager = SurvivalGameManager.Get();
+
+        gameManager.OnGameOver += onGameOver_Event;
+        gameManager.OnGameExit += OnGameExit_Event;
+    }
+
+    void OnDisable()
+    {
+        var gameManager = SurvivalGameManager.Get();
+        
+        gameManager.OnGameOver -= onGameOver_Event;
+        gameManager.OnGameExit -= OnGameExit_Event;
     }
 
     void Update()
     {
-        // 게임 정지
-        if (GameManager.Get().IsPaused) return;
-
         switch (m_WeaponID)
         {
             case 0:
-                transform.Rotate(m_Speed * Character.WeaponSpeed * Time.deltaTime * Vector3.back);
+                transform.Rotate(m_Speed * SurvivalGameState.Get().GetStatsComponent().TotalStats.AttackSpeed * Time.deltaTime * Vector3.back);
                 break;
             default:
                 m_Timer += Time.deltaTime;
-                if (m_Timer > m_Speed * Character.WeaponRate)
+                if (m_Timer > m_Speed / SurvivalGameState.Get().GetStatsComponent().TotalStats.AttackSpeed)
                 {
                     m_Timer = 0;
                     Fire();
@@ -58,7 +77,7 @@ public class Weapon : MonoBehaviour
 
     public void LevelUp(int _damage, int _count)
     {
-        m_Damage = _damage * (int)Character.Damage;
+        m_Damage = (int)(_damage * (1 + SurvivalGameState.Get().GetStatsComponent().TotalStats.Attack / 100.0f));
         m_Count += _count;
         
         if(m_WeaponID == 0)
@@ -74,21 +93,23 @@ public class Weapon : MonoBehaviour
         transform.parent = m_Player.transform;
         transform.localPosition = Vector3.zero;
         m_Scanner = GetComponentInParent<Scanner>(); // TODO 리팩토링 필요
+        m_BulletPrefab = _data.Projectile;
         
         // Property Set
         m_WeaponID = _data.ItemID;
-        m_Damage = _data.BaseDamage * (int)Character.Damage;
-        m_Count = _data.BaseCount + Character.Count;
-        m_PrefabID = GameManager.Get().GetPoolManager().GetPrefabID(_data.Projectile);
         
+        // 데미지 계산식 : WeaponDamage * (Total Attack / 100)
+        m_Damage = (int)(_data.BaseDamage * (1 + SurvivalGameState.Get().GetStatsComponent().TotalStats.Attack / 100.0f));
+        m_Count = _data.BaseCount + Character.Count;
+
         switch (m_WeaponID)
         {
             case 0:
-                m_Speed = 150;
+                m_Speed = 100f;
                 Arrange();
                 break;
             default:
-                m_Speed = 0.3f;
+                m_Speed = 1f;
                 break;
         }
 
@@ -111,7 +132,7 @@ public class Weapon : MonoBehaviour
             else
             {
                 // Bullet 스폰 및 배치
-                bullet = GameManager.Get().GetPoolManager().GetPool(m_PrefabID).Get();
+                bullet = PoolManager.GetInstance(m_BulletPrefab);
                 bullet.transform.parent = transform;
             }
             
@@ -136,17 +157,17 @@ public class Weapon : MonoBehaviour
         if (!m_Scanner.MainTarget) return;
         
         // Bullet 스폰
-        GameObject bullet = GameManager.Get().GetPoolManager().GetPool(m_PrefabID).Get();
+        Bullet bullet = PoolManager.GetInstance<Bullet>(m_BulletPrefab);
         
         // Bullet 방향 및 속도 설정
         Vector3 position = transform.position;
         Vector3 dir = (m_Scanner.MainTarget.position - position).normalized;
         bullet.transform.position = position;
         bullet.transform.rotation = Quaternion.FromToRotation(Vector3.up, dir);
-        bullet.GetComponent<Bullet>().Init(m_Damage, m_Count, dir);
+        bullet.Init(m_Damage, m_Count, dir);
 
         // Bullet 활성화
-        bullet.SetActive(true);
+        bullet.gameObject.SetActive(true);
         
         AudioManager.Get().PlaySfx(AudioManager.Sfx.Range);
     }

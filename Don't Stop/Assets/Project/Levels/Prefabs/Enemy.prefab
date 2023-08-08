@@ -192,16 +192,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8977fd52cf97a08488ac071a9f57e26b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Target: {fileID: 0}
-  m_Type: 0
-  bIsDead: 0
-  m_Health: 0
   m_EnemyData:
   - {fileID: 11400000, guid: d0556982ecc3ce345a5d51653cd86340, type: 2}
   - {fileID: 11400000, guid: 16cdd78c065c44244a1d9db669ca335b, type: 2}
   - {fileID: 11400000, guid: 3aac83a53e6ac4d428c80dd35b79673e, type: 2}
   - {fileID: 11400000, guid: aaf89c64197650346a7aec71fabdbfc5, type: 2}
   - {fileID: 11400000, guid: 6c7f4661ee5d9bc40ac2b6de0a9f7621, type: 2}
+  m_GoldPrefab: {fileID: 7069587601583237010, guid: c5e1ef38381655d4c86458f1a079ad78, type: 3}
+  m_FloatingTextDamage: {fileID: 8323770375173435933, guid: 36c0594138b6d274a8781f5f114d2fc7, type: 3}
+  m_Type: 0
+  m_DisappearTime: 3
+  m_Target: {fileID: 0}
+  m_IsDead: 0
+  m_Health: 0
 --- !u!114 &-4818292414534183671
 MonoBehaviour:
   m_ObjectHideFlags: 0

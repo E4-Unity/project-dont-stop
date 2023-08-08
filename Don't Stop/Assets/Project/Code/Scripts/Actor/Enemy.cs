@@ -1,22 +1,14 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
+using Framework;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.U2D.Animation;
+using Random = UnityEngine.Random;
 
-public class Enemy : MonoBehaviour
+public class Enemy : Actor
 {
-    // 상태
-    [SerializeField, ReadOnly] Rigidbody2D m_Target;
-    [SerializeField, ReadOnly] int m_Type = 0;
-    [SerializeField, ReadOnly] bool bIsDead;
-    [SerializeField, ReadOnly] int m_Health;
-    
-    // 에디터 할당
-    [SerializeField] EnemyData[] m_EnemyData;
+    #region Components
 
-    // 컴포넌트
     Rigidbody2D m_Rigidbody;
     SpriteRenderer m_SpriteRenderer;
     SpriteLibrary m_SpriteLibrary;
@@ -24,7 +16,35 @@ public class Enemy : MonoBehaviour
     Collider2D m_Collider;
     SortingGroup m_SortingGroup;
 
-    // 프로퍼티
+    #endregion
+    
+    #region Reference
+
+    [SerializeField] EnemyData[] m_EnemyData;
+    [SerializeField] GameObject m_GoldPrefab;
+    [SerializeField] GameObject m_FloatingTextDamage;
+
+    #endregion
+
+    #region Initialization
+
+    [SerializeField, ReadOnly] int m_Type = 0;
+    [SerializeField] int m_DisappearTime = 3;
+
+    #endregion
+
+    #region State
+
+    [SerializeField, ReadOnly] Rigidbody2D m_Target;
+    [SerializeField, ReadOnly] bool m_IsDead;
+    [SerializeField, ReadOnly] int m_Health;
+
+    #endregion
+
+    #region Properties
+
+    EnemyData Data => m_EnemyData[m_Type];
+
     float Speed => m_EnemyData[m_Type].Speed;
 
     int Health
@@ -32,13 +52,21 @@ public class Enemy : MonoBehaviour
         get => m_Health;
         set
         {
+            if (m_IsDead) return;
+            var damage = m_Health - value;
+            if (damage > 0)
+            {
+                ShowDamage(damage);
+            }
+            
             if(value > MaxHealth)
                 m_Health = MaxHealth;
             else if (value <= 0)
             {
                 m_Health = 0;
-                bIsDead = true;
+                m_IsDead = true;
                 Dead();
+                GetReward();
             }
             else
                 m_Health = value;
@@ -46,8 +74,11 @@ public class Enemy : MonoBehaviour
     }
     int MaxHealth => m_EnemyData[m_Type].MaxHealth;
     SpriteLibraryAsset GetSpriteLibraryAsset() => m_EnemyData[m_Type].GetSpriteLibraryAsset();
-    
-    /* 버퍼 시작 */
+
+    #endregion
+
+    #region Buffer
+
     // FixedUpdate
     Vector2 position;
     Vector2 dir;
@@ -55,29 +86,39 @@ public class Enemy : MonoBehaviour
     // KnockBack
     WaitForFixedUpdate waitForFixedUpdate;
     Vector3 knockBackDir;
-    /* 버퍼 종료 */
     
-    // MonoBehaviour
-    void Awake()
+    // Dead
+    Gold gold;
+    WaitForSeconds disappearTime;
+    
+    // Damage
+    Vector3 hitPosition;
+
+    #endregion
+
+    #region Event Functions
+
+    // Survival Game Manager
+    void OnStageClear_Event(int _nextStage)
     {
-        // 컴포넌트 할당
-        m_Rigidbody = GetComponent<Rigidbody2D>();
-        m_SpriteRenderer = GetComponent<SpriteRenderer>();
-        m_SpriteLibrary = GetComponent<SpriteLibrary>();
-        m_Animator = GetComponent<Animator>();
-        m_Collider = GetComponent<Collider2D>();
-        m_SortingGroup = GetComponent<SortingGroup>();
-        
-        // 변수 할당
-        waitForFixedUpdate = new WaitForFixedUpdate();
+        Dead();
     }
-    
+
+    void OnGameClear_Event()
+    {
+        Dead();
+    }
+
+    #endregion
+
+    #region Monobehaviour
+
     void FixedUpdate()
     {
         // 게임 정지
-        if (GameManager.Get().IsPaused) return;
+        if (TimeManager.Get().IsPaused) return;
 
-        if (bIsDead || m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Hit")) return;
+        if (m_IsDead || m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Hit")) return;
         
         position = m_Rigidbody.position;
         dir = m_Target.position - position;
@@ -88,70 +129,144 @@ public class Enemy : MonoBehaviour
 
     void LateUpdate()
     {
-        // 게임 정지
-        if (GameManager.Get().IsPaused) return;
-
         m_SpriteRenderer.flipX = dir.x < 0;
     }
 
-    void OnEnable()
-    {
-        // 부활
-        Revive();
-
-        // 목표물을 플레이어로 설정
-        if(GameManager.Get())
-            m_Target = GameManager.Get().GetPlayer().GetComponent<Rigidbody2D>();
-    }
-
-    public void Init(SpawnData _spawnData)
-    {
-        m_Type = Mathf.Min(_spawnData.Type, m_EnemyData.Length - 1);
-        m_SpriteLibrary.spriteLibraryAsset = GetSpriteLibraryAsset();
-    }
-    
     void OnTriggerEnter2D(Collider2D _other)
     {
-        if (bIsDead) return;
+        if (m_IsDead) return;
         if (!_other.CompareTag("Bullet")) return;
+        
+        hitPosition = _other.bounds.ClosestPoint(transform.position);
 
         Health -= _other.GetComponent<Bullet>().Damage;
         m_Animator.SetTrigger("Hit");
         StartCoroutine(KnockBack());
-        
-        if (GameManager.Get().IsPaused)
-            return;
+
         AudioManager.Get().PlaySfx(AudioManager.Sfx.Hit);
+    }
+
+    #endregion
+
+    #region Actor
+
+    protected override void AssignComponents()
+    {
+        base.AssignComponents();
+        
+        m_Rigidbody = GetComponent<Rigidbody2D>();
+        m_SpriteRenderer = GetComponent<SpriteRenderer>();
+        m_SpriteLibrary = GetComponent<SpriteLibrary>();
+        m_Animator = GetComponent<Animator>();
+        m_Collider = GetComponent<Collider2D>();
+        m_SortingGroup = GetComponent<SortingGroup>();
+    }
+
+    protected override void BindEventFunctions()
+    {
+        base.BindEventFunctions();
+        TimeManager.Get().OnPause += OnPause_Event;
+        TimeManager.Get().OnResume += OnResume_Event;
+        SurvivalGameManager.Get().OnGameClear += OnGameClear_Event;
+        SurvivalGameManager.Get().OnStageClear += OnStageClear_Event;
+    }
+
+    protected override void UnbindEventFunctions()
+    {
+        base.UnbindEventFunctions();
+        TimeManager.Get().OnPause -= OnPause_Event;
+        TimeManager.Get().OnResume -= OnResume_Event;
+        SurvivalGameManager.Get().OnGameClear -= OnGameClear_Event;
+        SurvivalGameManager.Get().OnStageClear -= OnStageClear_Event;
+    }
+
+    protected override void Awake_Event()
+    {
+        base.Awake_Event();
+        
+        // 변수 할당
+        waitForFixedUpdate = new WaitForFixedUpdate();
+        disappearTime = new WaitForSeconds(m_DisappearTime);
+    }
+
+    protected override void OnEnable_Event()
+    {
+        base.OnEnable_Event();
+        
+        // 부활
+        Revive();
+        
+        m_SpriteLibrary.spriteLibraryAsset = GetSpriteLibraryAsset();
+
+        // 목표물을 플레이어로 설정
+        if(SurvivalGameManager.Get())
+            m_Target = SurvivalGameManager.Get().GetPlayer().GetComponent<Rigidbody2D>();
+    }
+
+    #endregion
+
+    #region Method
+
+    void ShowDamage(float _damage)
+    {
+        if (m_FloatingTextDamage is null) return;
+
+        var floatingTextDamage = PoolManager.GetInstance<DamageUI>(m_FloatingTextDamage);
+        floatingTextDamage.Init(_damage, hitPosition);
+        floatingTextDamage.gameObject.SetActive(true);
     }
 
     IEnumerator KnockBack()
     {
         yield return waitForFixedUpdate;
-        knockBackDir = (transform.position - GameManager.Get().GetPlayer().transform.position).normalized;
+        knockBackDir = (transform.position - SurvivalGameManager.Get().GetPlayer().transform.position).normalized;
         m_Rigidbody.AddForce(knockBackDir * 3, ForceMode2D.Impulse);
     }
 
     void Dead()
     {
-        bIsDead = true;
-        m_Animator.SetBool("Dead", bIsDead);
+        m_IsDead = true;
+        m_Animator.SetBool("Dead", m_IsDead);
         m_Collider.enabled = false;
         m_Rigidbody.simulated = false;
         m_SortingGroup.sortingLayerName = "Dead";
         
-        GameManager.Get().GetExp();
+        // 일정 시간 뒤 시체가 사라짐
+        StartCoroutine(Disappear());
 
         // 게임 종료 후 Enemy Cleaner로 발생하는 죽음은 무시
-        if (GameManager.Get().IsPaused)
-            return;
         AudioManager.Get().PlaySfx(AudioManager.Sfx.Dead);
+    }
+
+    void GetReward()
+    {
+        // 경험치 획득
+        SurvivalGameManager.Get().GetExp(Data.Exp);
+
+        // 일정 확률로 골드 드랍
+        if (m_GoldPrefab)
+        {
+            if (Random.Range(0, 1f) <= Data.DropProbability)
+            {
+                gold = PoolManager.GetInstance<Gold>(m_GoldPrefab);
+                gold.transform.position = transform.position;
+                gold.Init(Data.Gold);
+                gold.gameObject.SetActive(true);
+            }
+        }
+    }
+
+    IEnumerator Disappear()
+    {
+        yield return disappearTime;
+        PoolManager.ReleaseInstance(gameObject);
     }
 
     void Revive()
     {
         // Dead의 반대 동작
-        bIsDead = false;
-        m_Animator.SetBool("Dead", bIsDead);
+        m_IsDead = false;
+        m_Animator.SetBool("Dead", m_IsDead);
         m_Collider.enabled = true;
         m_Rigidbody.simulated = true;
         m_SortingGroup.sortingLayerName = "Enemy";
@@ -160,8 +275,14 @@ public class Enemy : MonoBehaviour
         m_Health = MaxHealth;
     }
 
-    void Release()
+    #endregion
+
+    #region API
+
+    public void Init(SpawnData _spawnData)
     {
-        GameManager.Get().GetPoolManager().GetPool(gameObject.GetComponent<PoolTracker>().PrefabID).Release(gameObject);
+        m_Type = Mathf.Min(_spawnData.Type, m_EnemyData.Length - 1);
     }
+
+    #endregion
 }

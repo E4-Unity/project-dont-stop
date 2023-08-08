@@ -100,11 +100,18 @@ public class AudioManager : MonoBehaviour
     {
         m_BgmEffect.enabled = _isPlay;
     }
-    
-    /* MonoBehaviour */
+
+    #region Interface
+
+    #region MonoBehaviour
+
     void Awake()
     {
         Instance = this;
         Init();
     }
+
+    #endregion
+
+    #endregion
 }
