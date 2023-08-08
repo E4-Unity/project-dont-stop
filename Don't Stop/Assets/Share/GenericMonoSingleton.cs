@@ -1,49 +1,41 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class GenericMonoSingleton<T> : MonoBehaviour where T : class
+public class GenericMonoSingleton<T> : MonoBehaviour where T : GenericMonoSingleton<T>
 {
-    /* Static */
+    #region Static
+
     static T Instance;
+
     public static T Get() => Instance;
 
-    /* Initialization */
-    [Header("Initialization")] 
-    [SerializeField] bool m_DontDestroyOnLoad = true;
-
-    /* MonoBehaviour */
-    protected void Awake()
+    public static void FindInstance()
     {
+        Instance ??= FindObjectOfType<T>();
+    }
+
+    #endregion
+
+    #region Monobehaviour
+
+    protected virtual void Awake()
+    {
+        var instance = GetComponent<T>();
         if (Instance is null)
         {
-            Instance = GetComponent<T>();
-            if(m_DontDestroyOnLoad)
-                DontDestroyOnLoad(gameObject);
-            Awake_Implementation();
+            Instance = instance;
         }
-        else
+        else if(Instance != instance)
         {
             Destroy(gameObject);
+            return;
         }
     }
 
-    protected void OnDestroy()
+    protected virtual void OnDestroy()
     {
-        if (!m_DontDestroyOnLoad && Instance == GetComponent<T>())
+        if (Instance == GetComponent<T>())
             Instance = null;
-        
-        OnDestroy_Implementation();
     }
 
-    protected virtual void Awake_Implementation()
-    {
-        
-    }
-
-    protected virtual void OnDestroy_Implementation()
-    {
-        
-    }
+    #endregion
 }

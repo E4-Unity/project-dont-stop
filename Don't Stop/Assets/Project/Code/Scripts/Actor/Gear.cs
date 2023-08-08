@@ -11,7 +11,7 @@ public class Gear : MonoBehaviour
     {
         // Basic Set
         name = "Gear " + _data.ItemID;
-        transform.parent = GameManager.Get().GetPlayer().transform;
+        transform.parent = SurvivalGameManager.Get().GetPlayer().transform;
         transform.localPosition = Vector3.zero;
 
         // Property Set
@@ -49,12 +49,12 @@ public class Gear : MonoBehaviour
             {
                 // 근접 무기
                 case 0:
-                    float speed = 150 * Character.WeaponSpeed;
+                    float speed = 100 * SurvivalGameState.Get().GetStatsComponent().TotalStats.AttackSpeed;
                     weapon.Speed = speed + (speed * m_Rate);
                     break;
                 // 원거리 무기
                 default:
-                    float rate = 0.3f * Character.WeaponRate;
+                    float rate = 1f * SurvivalGameState.Get().GetStatsComponent().TotalStats.AttackSpeed;
                     weapon.Speed = rate * (1f - m_Rate);
                     break;
             }
@@ -63,7 +63,7 @@ public class Gear : MonoBehaviour
 
     void SpeedUp()
     {
-        float speed = 3f * Character.Speed;
-        GameManager.Get().GetPlayer().Speed = speed + speed * m_Rate;
+        float speed = 3f * SurvivalGameState.Get().GetStatsComponent().TotalStats.MovementSpeed;
+        SurvivalGameManager.Get().GetPlayer().Speed = speed + speed * m_Rate;
     }
 }

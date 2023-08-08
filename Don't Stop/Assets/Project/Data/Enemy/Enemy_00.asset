@@ -15,3 +15,6 @@ MonoBehaviour:
   m_SpriteLibraryAsset: {fileID: 7108339969198208228, guid: 9be8899d874489841b8d9e77b6b50cda, type: 3}
   m_Speed: 1
   m_MaxHealth: 10
+  m_DropProbability: 0.3
+  m_Gold: 10
+  m_Exp: 1

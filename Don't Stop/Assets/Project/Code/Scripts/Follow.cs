@@ -16,6 +16,6 @@ public class Follow : MonoBehaviour
 
     void FixedUpdate()
     {
-        m_Rect.position = Camera.main.WorldToScreenPoint(GameManager.Get().GetPlayer().transform.position);
+        m_Rect.position = Camera.main.WorldToScreenPoint(SurvivalGameManager.Get().GetPlayer().transform.position);
     }
 }

@@ -10,22 +10,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e1ead483e977f1b478c993b3323183e5, type: 3}
-  m_Name: CD_Farmer
+  m_Name: CD_Farmer_03
   m_EditorClassIdentifier: 
   m_BaseAttribute:
-    Attack: 10
-    Defense: 0
-    MaxHealth: 0
-    MovementSpeed: 0
-    AttackSpeed: 0
+    m_Attack: 10
+    m_Defense: 10
+    m_MaxHealth: 100
+    m_MovementSpeed: 1.1
+    m_AttackSpeed: 0.9
   m_NextAttributes:
-  - Attack: 1
-    Defense: 0
-    MaxHealth: 0
-    MovementSpeed: 0
-    AttackSpeed: 0
+  - m_Attack: 2
+    m_Defense: 2
+    m_MaxHealth: 1
+    m_MovementSpeed: 0.01
+    m_AttackSpeed: 0
   m_NextExp: 0a000000
-  m_ID: 0
-  m_DisplayName: "\uC300\uB18D\uBD80"
+  m_NextGold: 2c010000
+  m_ID: 3
+  m_DisplayName: "\uCF69\uB18D\uBD80"
   m_Description: 
+  m_Icon: {fileID: 938132271, guid: 57a1443e67528144aa07582927559650, type: 3}
   m_BaseWeaponID: 0

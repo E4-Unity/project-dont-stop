@@ -1,7 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -95,7 +91,7 @@ public class Item : MonoBehaviour
                 m_Level++;
                 break;
             case ItemData.ItemType.Heal:
-                GameManager.Get().Health = GameManager.Get().MaxHealth;
+                SurvivalGameManager.Get().Health = SurvivalGameManager.Get().MaxHealth;
                 break;
         }
 

@@ -2,10 +2,9 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-public class LevelManager : MonoBehaviour
+public class LevelManager : MonoBehaviour, IManager
 {
     public static LevelManager Instnace;
     public static LevelManager Get() => Instnace;
@@ -118,5 +117,10 @@ public class LevelManager : MonoBehaviour
         }
         else
             Destroy(gameObject);
+    }
+
+    public void InitManager()
+    {
+        
     }
 }

@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class ChangeSceneButton : MonoBehaviour
 {
@@ -23,5 +23,11 @@ public class ChangeSceneButton : MonoBehaviour
         m_Clicked = true;
         LevelManager.Get().OnRefresh += OnRefresh_Event;
         LevelManager.Get().ChangeScene((int)m_TargetScene);
+    }
+
+    public void ReloadScene()
+    {
+        LevelManager.Get().OnRefresh += OnRefresh_Event;
+        LevelManager.Get().ChangeScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

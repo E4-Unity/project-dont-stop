@@ -13,18 +13,19 @@ MonoBehaviour:
   m_Name: PD_Test
   m_EditorClassIdentifier: 
   m_BaseAttribute:
-    m_Attack: 10
-    m_Defense: 10
-    m_MaxHealth: 100
-    m_MovementSpeed: 1
-    m_AttackSpeed: 1
+    m_Attack: 0
+    m_Defense: 0
+    m_MaxHealth: 0
+    m_MovementSpeed: 0
+    m_AttackSpeed: 0
   m_NextAttributes:
   - m_Attack: 2
     m_Defense: 2
     m_MaxHealth: 10
-    m_MovementSpeed: 0.1
-    m_AttackSpeed: 0.1
+    m_MovementSpeed: 0.005
+    m_AttackSpeed: 0.005
   m_NextExp: 0a000000
+  m_NextGold: e8030000
   m_ID: 0
   m_DisplayName: 
   m_Description: 

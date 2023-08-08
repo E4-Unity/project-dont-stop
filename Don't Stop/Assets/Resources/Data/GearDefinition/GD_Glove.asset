@@ -25,6 +25,7 @@ MonoBehaviour:
     m_MovementSpeed: 0
     m_AttackSpeed: 0
   m_NextExp: 0a000000
+  m_NextGold: e8030000
   m_ID: 0
   m_DisplayName: "\uD14C\uD06C\uB2C8\uCEEC \uC7A5\uAC11"
   m_Description: 

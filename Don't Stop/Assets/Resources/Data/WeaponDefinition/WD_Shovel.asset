@@ -17,8 +17,10 @@ MonoBehaviour:
     AttackRange: 0
     ProjectileNum: 0
     AttackRate: 0
+    Penetration: 0
   m_NextAttributes: []
   m_NextExp: 0a000000
+  m_NextGold: e8030000
   m_ID: 0
   m_DisplayName: "\uC0BD"
   m_Description: 

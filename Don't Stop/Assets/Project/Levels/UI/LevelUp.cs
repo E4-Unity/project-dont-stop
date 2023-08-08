@@ -51,7 +51,7 @@ public class LevelUp : MonoBehaviour
     {
         Next();
         m_RectTransform.localScale = Vector3.one;
-        GameManager.Get().PauseGame();
+        TimeManager.Get().PauseGame();
         
         AudioManager.Get().PlaySfx(AudioManager.Sfx.LevelUp);
         AudioManager.Get().EffectBgm(true);
@@ -60,7 +60,7 @@ public class LevelUp : MonoBehaviour
     public void Hide()
     {
         m_RectTransform.localScale = Vector3.zero;
-        GameManager.Get().ResumeGame();
+        TimeManager.Get().ResumeGame();
         
         AudioManager.Get().PlaySfx(AudioManager.Sfx.Select);
         AudioManager.Get().EffectBgm(false);

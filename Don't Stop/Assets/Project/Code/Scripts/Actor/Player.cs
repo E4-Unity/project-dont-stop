@@ -1,12 +1,9 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
+using Framework;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.U2D.Animation;
 
-public class Player : MonoBehaviour
+public class Player : Actor
 {
     /* 컴포넌트 */
     Rigidbody2D m_Rigidbody;
@@ -67,52 +64,54 @@ public class Player : MonoBehaviour
     // 초기화
     void Init()
     {
-
+        m_Speed *= SurvivalGameState.Get().GetStatsComponent().TotalStats.MovementSpeed;
+        m_SpriteLibrary.spriteLibraryAsset = m_SpriteLibraryAssets[PlayerState.Get().CharacterData.DefinitionID];
     }
     
     /* Input System */
     void OnMove(InputValue _inputValue)
     {
-        // 게임 정지
-        if (GameManager.Get().IsPaused) return;
-
         inputValue = _inputValue.Get<Vector2>();
     }
 
     /* MonoBehaviour */
-    void Awake()
+
+    #region Actor
+
+    protected override void AssignComponents()
     {
+        base.AssignComponents();
         m_Rigidbody = GetComponent<Rigidbody2D>();
         m_Renderer = GetComponent<SpriteRenderer>();
         m_Animator = GetComponent<Animator>();
         m_SpriteLibrary = GetComponent<SpriteLibrary>();
     }
 
-    void OnEnable()
+    protected override void BindEventFunctions()
     {
-        m_Speed *= Character.Speed;
-        m_SpriteLibrary.spriteLibraryAsset = m_SpriteLibraryAssets[GameManager.Get().PlayerID];
+        base.BindEventFunctions();
+        TimeManager.Get().OnPause += OnPause_Event;
+        TimeManager.Get().OnResume += OnResume_Event;
     }
 
-    void Start()
+    #endregion
+
+    #region Monobehaviour
+
+    protected override void Start_Event()
     {
+        base.Start_Event();
         Init();
     }
 
     void FixedUpdate()
     {
-        // 게임 정지
-        if (GameManager.Get().IsPaused) return;
-
         // 움직임
         m_Rigidbody.MovePosition(m_Rigidbody.position + m_Speed * Time.fixedDeltaTime * inputValue.normalized);
     }
 
     void LateUpdate()
     {
-        // 게임 정지
-        if (GameManager.Get().IsPaused) return;
-
         // 애니메이션 변수 업데이트
         m_Animator.SetFloat("Speed", inputValue.magnitude);
         
@@ -135,12 +134,14 @@ public class Player : MonoBehaviour
 
     void OnCollisionStay2D(Collision2D _other)
     {
-        if (GameManager.Get().IsPaused) return;
-
-        GameManager.Get().Health -= Time.deltaTime * 10;
+        // 이미 죽은 상태라면 무시
+        if (SurvivalGameManager.Get().Health < 0) return;
+        
+        // 데미지 적용
+        SurvivalGameManager.Get().Health -= Time.deltaTime * 10;
 
         // Dead
-        if (GameManager.Get().Health < 0)
+        if (SurvivalGameManager.Get().Health < 0)
         {
             foreach (var obj in m_ObjectsToDeactivate)
             {
@@ -148,7 +149,9 @@ public class Player : MonoBehaviour
             }
             
             m_Animator.SetTrigger("Dead");
-            GameManager.Get().GameOver();
+            SurvivalGameManager.Get().GameOver();
         }
     }
+    
+    #endregion
 }

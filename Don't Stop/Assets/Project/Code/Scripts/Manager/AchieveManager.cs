@@ -53,10 +53,10 @@ public class AchieveManager : MonoBehaviour
         switch (_achieve)
         {
             case Achieve.UnlockPotato:
-                isAchieve = GameManager.Get().Kill >= 10;
+                isAchieve = SurvivalGameManager.Get().Kill >= 10;
                 break;
             case Achieve.UnlockBean:
-                isAchieve = Mathf.Approximately(GameManager.Get().PlayTime, GameManager.Get().MaxPlayTime); // TODO 클리어 정보 따로 만들 예정
+                isAchieve = Mathf.Approximately(TimeManager.Get().PlayTime, TimeManager.Get().MaxPlayTime); // TODO 클리어 정보 따로 만들 예정
                 break;
         }
 

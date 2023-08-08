@@ -124,7 +124,7 @@ GameObject:
   - component: {fileID: 5751069540791961244}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -339,7 +339,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85dbfef120d49d642832763174c92b32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_ShouldInit: 0
+  m_Hands: []
+  m_ObjectsToDeactivate: []
   m_Speed: 3
+  m_SpriteLibraryAssets: []
 --- !u!114 &5751069540791961244
 MonoBehaviour:
   m_ObjectHideFlags: 0
