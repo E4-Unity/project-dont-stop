@@ -1,11 +1,27 @@
 ﻿using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Framework
 {
     [Serializable]
-    public abstract class UAttributeData<TDefinition, TAttribute> : IDataModel where TAttribute : UAttribute<TAttribute>, new() where TDefinition : EntityDefinition<TDefinition, TAttribute>, new()
+    public abstract class UAttributeDataBase
     {
+        public abstract AttributeDefinitionBase DefinitionBase { get; set; }
+    }
+    
+    [Serializable]
+    public abstract class UAttributeData<TDefinition, TAttribute> : UAttributeDataBase, IDataModel where TAttribute : UAttribute<TAttribute>, new() where TDefinition : EntityDefinition<TDefinition, TAttribute>, new()
+    {
+        #region Field
+
+        [SerializeField] TAttribute m_Attribute;
+
+        public TAttribute Attribute => m_Attribute;
+        public TAttribute NextAttribute => m_Definition.GetNextAttribute(m_Level);
+
+        #endregion
+        
         #region Model Properties
 
         #region Level
@@ -21,6 +37,7 @@ namespace Framework
                 OnLevelUpdate?.Invoke(value);
                 NextExp = m_Definition.GetNextExp(m_Level);
                 NextGold = m_Definition.GetNextGold(m_Level);
+                m_Attribute = m_Definition.GetTotalAttribute(m_Level);
             }
         }
 
@@ -80,25 +97,6 @@ namespace Framework
 
         #endregion
 
-        #region DefinitionID
-
-        [SerializeField] public int m_DefinitionID;
-        public event Action<int> OnDefinitionIDUpdate;
-
-        public int DefinitionID
-        {
-            get => m_DefinitionID;
-            set
-            {
-                m_DefinitionID = value;
-                OnDefinitionIDUpdate?.Invoke(value);
-                Definition = Array.Find(EntityDefinition<TDefinition, TAttribute>.Definitions,
-                    _definition => _definition.ID == DefinitionID);
-            }
-        }
-
-        #endregion
-
         #endregion
 
         #region Properties
@@ -112,6 +110,10 @@ namespace Framework
             set => m_Definition = value;
         }
 
+        public string DisplayName => Definition.DisplayName;
+        public string Description => Definition.Description;
+        public Sprite Icon => Definition.Icon;
+
         #endregion
 
         #endregion
@@ -120,19 +122,26 @@ namespace Framework
 
         public void Init(FSavedAttributeData _savedAttributeData)
         {
-            DefinitionID = _savedAttributeData.DefinitionID;
+            Definition = Array.Find(EntityDefinition<TDefinition, TAttribute>.Definitions,
+                _definition => _definition.ID == _savedAttributeData.DefinitionID);
             Level = _savedAttributeData.Level;
             Exp = _savedAttributeData.Exp;
         }
-        public void GetSaveData(out FSavedAttributeData _savedAttributeData)
+        public FSavedAttributeData GetSaveData() => new FSavedAttributeData()
         {
-            _savedAttributeData.DefinitionID = DefinitionID;
-            _savedAttributeData.Level = Level;
-            _savedAttributeData.Exp = Exp;
-        }
-        public TAttribute GetAttribute() => m_Definition.GetAttribute(m_Level);
+            DefinitionID = Definition.ID,
+            Level = Level,
+            Exp = Exp
+
+        };
 
         #endregion
+
+        public override AttributeDefinitionBase DefinitionBase
+        {
+            get => m_Definition;
+            set => m_Definition = value as TDefinition;
+        }
 
         #region IDataModel
 

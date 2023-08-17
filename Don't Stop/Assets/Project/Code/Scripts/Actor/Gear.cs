@@ -5,7 +5,9 @@ using UnityEngine;
 public class Gear : MonoBehaviour
 {
     [SerializeField] ItemData.ItemType m_Type;
-    [SerializeField] float m_Rate;
+    //[SerializeField] float m_Rate;
+    [SerializeField] UGearData m_GearData;
+    public UGearData GearData => m_GearData;
 
     public void Init(ItemData _data)
     {
@@ -16,27 +18,32 @@ public class Gear : MonoBehaviour
 
         // Property Set
         m_Type = _data.Type;
-        m_Rate = _data.Damages[0];
+        //m_Rate = _data.Damages[0];
         ApplyGear();
     }
 
-    public void LevelUp(float _rate)
+    public void Init(UGearData _gearData)
     {
-        m_Rate = _rate;
+        m_GearData = _gearData;
+        
+        // Basic Set
+        name = "Gear " + m_GearData.DisplayName;
+        transform.parent = SurvivalGameManager.Get().GetPlayer().transform;
+        transform.localPosition = Vector3.zero;
+        
         ApplyGear();
     }
 
-    void ApplyGear()
+    public void LevelUp()
     {
-        switch (m_Type)
-        {
-            case ItemData.ItemType.Glove:
-                RateUp();
-                break;
-            case ItemData.ItemType.Shoe:
-                SpeedUp();
-                break;
-        }
+        m_GearData.Level++;
+        ApplyGear();
+    }
+
+    public void ApplyGear()
+    {
+        RateUp();
+        SpeedUp();
     }
 
     void RateUp()
@@ -45,17 +52,17 @@ public class Gear : MonoBehaviour
 
         foreach (Weapon weapon in weapons)
         {
-            switch (weapon.WeaponID)
+            weapon.ApplyWeaponAttribute();
+            
+            switch (weapon.WeaponData.WeaponType)
             {
                 // 근접 무기
-                case 0:
-                    float speed = 100 * SurvivalGameState.Get().GetStatsComponent().TotalStats.AttackSpeed;
-                    weapon.Speed = speed + (speed * m_Rate);
+                case EWeaponType.Melee:
+                    weapon.Speed *= (1 + m_GearData.Attribute.AttackSpeed);
                     break;
                 // 원거리 무기
                 default:
-                    float rate = 1f * SurvivalGameState.Get().GetStatsComponent().TotalStats.AttackSpeed;
-                    weapon.Speed = rate * (1f - m_Rate);
+                    weapon.Speed /= (1 + m_GearData.Attribute.AttackSpeed);
                     break;
             }
         }
@@ -63,7 +70,7 @@ public class Gear : MonoBehaviour
 
     void SpeedUp()
     {
-        float speed = 3f * SurvivalGameState.Get().GetStatsComponent().TotalStats.MovementSpeed;
-        SurvivalGameManager.Get().GetPlayer().Speed = speed + speed * m_Rate;
+        float speed = 3f * (SurvivalGameState.Get().GetStatsComponent().TotalStats.MovementSpeed + m_GearData.Attribute.MovementSpeed);
+        SurvivalGameManager.Get().GetPlayer().Speed = speed;
     }
 }

@@ -65,7 +65,7 @@ public class Player : Actor
     void Init()
     {
         m_Speed *= SurvivalGameState.Get().GetStatsComponent().TotalStats.MovementSpeed;
-        m_SpriteLibrary.spriteLibraryAsset = m_SpriteLibraryAssets[PlayerState.Get().CharacterData.DefinitionID];
+        m_SpriteLibrary.spriteLibraryAsset = m_SpriteLibraryAssets[PlayerState.Get().CharacterData.Definition.ID];
     }
     
     /* Input System */
@@ -74,7 +74,14 @@ public class Player : Actor
         inputValue = _inputValue.Get<Vector2>();
     }
 
-    /* MonoBehaviour */
+    #region Event Function
+
+    void OnGameEnd_Event()
+    {
+        GetRigidbody().simulated = false;
+    }
+
+    #endregion
 
     #region Actor
 
@@ -92,6 +99,15 @@ public class Player : Actor
         base.BindEventFunctions();
         TimeManager.Get().OnPause += OnPause_Event;
         TimeManager.Get().OnResume += OnResume_Event;
+        SurvivalGameManager.Get().OnGameEnd += OnGameEnd_Event;
+    }
+
+    protected override void UnbindEventFunctions()
+    {
+        base.UnbindEventFunctions();
+        TimeManager.Get().OnPause -= OnPause_Event;
+        TimeManager.Get().OnResume -= OnResume_Event;
+        SurvivalGameManager.Get().OnGameEnd -= OnGameEnd_Event;
     }
 
     #endregion
@@ -147,7 +163,6 @@ public class Player : Actor
             {
                 obj.SetActive(false);
             }
-            
             m_Animator.SetTrigger("Dead");
             SurvivalGameManager.Get().GameOver();
         }

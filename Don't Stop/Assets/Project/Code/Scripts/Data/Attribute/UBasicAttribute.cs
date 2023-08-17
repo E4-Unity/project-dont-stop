@@ -91,15 +91,6 @@ public class UBasicAttribute : UAttribute<UBasicAttribute>, IDataModel
     
     #endregion
 
-    public override UBasicAttribute Add(UBasicAttribute _other) => new UBasicAttribute
-    {
-        Attack = Attack + _other.Attack,
-        Defense = Defense + _other.Defense,
-        MaxHealth = MaxHealth + _other.MaxHealth,
-        MovementSpeed = MovementSpeed + _other.MovementSpeed,
-        AttackSpeed = AttackSpeed + _other.AttackSpeed
-    };
-
     #region IDataModel
 
     public void ManualBroadcast()
@@ -112,4 +103,35 @@ public class UBasicAttribute : UAttribute<UBasicAttribute>, IDataModel
     }
 
     #endregion
+    
+    public UBasicAttribute() {}
+
+    public UBasicAttribute(UBasicAttribute _copy)
+    {
+        if (_copy is null)
+            return;
+
+        Attack = _copy.Attack;
+        Defense = _copy.Defense;
+        MaxHealth = _copy.MaxHealth;
+        MovementSpeed = _copy.MovementSpeed;
+        AttackSpeed = _copy.AttackSpeed;
+    }
+
+    protected override UAttributeBase Add(UAttributeBase _other)
+    {
+        if (_other is UBasicAttribute other)
+        {
+            return new UBasicAttribute()
+            {
+                Attack = Attack + other.Attack,
+                Defense = Defense + other.Defense,
+                MaxHealth = MaxHealth + other.MaxHealth,
+                MovementSpeed = MovementSpeed + other.MovementSpeed,
+                AttackSpeed = AttackSpeed + other.AttackSpeed
+            };
+        }
+
+        return new UBasicAttribute(this);
+    }
 }

@@ -3,20 +3,58 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
+    #region State
+
+    [SerializeField] UWeaponData m_WeaponData;
+
+    #endregion
+
+    #region Property
+
+    public UWeaponData WeaponData => m_WeaponData;
+
+    #endregion
+    
     // 에디터 설정
     [SerializeField] int m_WeaponID;
     [SerializeField] GameObject m_BulletPrefab;
+    [SerializeField] int m_BaseDamage;
     [SerializeField] int m_Damage;
     [SerializeField] int m_Count;
+    [SerializeField] float m_BaseSpeed;
     [SerializeField] float m_Speed;
+
+    [SerializeField] int m_ProjectileNum; 
     
     // 프로퍼티
     public int WeaponID => m_WeaponID;
+    public float BaseSpeed => m_BaseSpeed;
+    public int BaseDamage => m_BaseDamage;
+
+    public int Damage
+    {
+        get => m_Damage;
+        set
+        {
+            m_Damage = value;
+            if (m_WeaponData.WeaponType == EWeaponType.Melee)
+            {
+                Arrange();
+            }
+        }
+    }
 
     public float Speed
     {
         get => m_Speed;
-        set => m_Speed = value;
+        set
+        {
+            m_Speed = value;
+            if (m_WeaponData.WeaponType == EWeaponType.Melee)
+            {
+                Arrange();
+            }
+        }
     }
 
     // 상태
@@ -59,9 +97,9 @@ public class Weapon : MonoBehaviour
 
     void Update()
     {
-        switch (m_WeaponID)
+        switch (m_WeaponData.WeaponType)
         {
-            case 0:
+            case EWeaponType.Melee:
                 transform.Rotate(m_Speed * SurvivalGameState.Get().GetStatsComponent().TotalStats.AttackSpeed * Time.deltaTime * Vector3.back);
                 break;
             default:
@@ -75,52 +113,69 @@ public class Weapon : MonoBehaviour
         }
     }
 
-    public void LevelUp(int _damage, int _count)
-    {
-        m_Damage = (int)(_damage * (1 + SurvivalGameState.Get().GetStatsComponent().TotalStats.Attack / 100.0f));
-        m_Count += _count;
-        
-        if(m_WeaponID == 0)
-            Arrange();
-        
-        m_Player.BroadcastMessage("ApplyGear", SendMessageOptions.DontRequireReceiver);
-    }
+    #region API
 
-    public void Init(ItemData _data)
+    public void Init(UWeaponData _weaponData)
     {
+        // Weapon Data 참조 전달
+        m_WeaponData = _weaponData;
+
         // Basic Set
-        name = "Weapon " + _data.ItemID;
+        name = "Weapon " + m_WeaponData.DisplayName;
         transform.parent = m_Player.transform;
         transform.localPosition = Vector3.zero;
         m_Scanner = GetComponentInParent<Scanner>(); // TODO 리팩토링 필요
-        m_BulletPrefab = _data.Projectile;
+        m_BulletPrefab = m_WeaponData.Prefab;
         
-        // Property Set
-        m_WeaponID = _data.ItemID;
-        
-        // 데미지 계산식 : WeaponDamage * (Total Attack / 100)
-        m_Damage = (int)(_data.BaseDamage * (1 + SurvivalGameState.Get().GetStatsComponent().TotalStats.Attack / 100.0f));
-        m_Count = _data.BaseCount + Character.Count;
+        ApplyWeaponAttribute();
+    }
 
-        switch (m_WeaponID)
+    public void LevelUp()
+    {
+        m_WeaponData.Level++;
+        ApplyWeaponAttribute();
+        foreach (var gear in GetComponents<Gear>())
         {
-            case 0:
-                m_Speed = 100f;
+            gear.ApplyGear();
+        }
+    }
+
+    #endregion
+
+    #region Method
+
+    public void ApplyWeaponAttribute()
+    {
+        var weaponAttribute = m_WeaponData.Attribute;
+
+        m_BaseDamage = weaponAttribute.Damage;
+
+        SpriteRenderer hand;
+        
+        switch (m_WeaponData.WeaponType)
+        {
+            case EWeaponType.Melee:
+                m_BaseSpeed = weaponAttribute.Speed;
+                m_Count = weaponAttribute.ProjectileNum;
+                hand = m_Player.GetHands()[0];
                 Arrange();
                 break;
+            case EWeaponType.Range:
+                m_BaseSpeed = weaponAttribute.AttackRate;
+                m_Count = weaponAttribute.Penetration - 1;
+                m_ProjectileNum = weaponAttribute.ProjectileNum;
+                hand = m_Player.GetHands()[1];
+                break;
             default:
-                m_Speed = 1f;
+                hand = m_Player.GetHands()[0];
                 break;
         }
-
-        // Hand Set
-        // TODO OnEquip 델리게이트로 Player에서 직접 할당 예정
-        var hand = m_Player.GetHands()[(int)_data.Type];
-        hand.sprite = _data.WeaponSprite;
-        hand.gameObject.SetActive(true);
         
-        m_Player.BroadcastMessage("ApplyGear", SendMessageOptions.DontRequireReceiver);
+        hand.sprite = m_WeaponData.DisplaySprite;
+        hand.gameObject.SetActive(true);
     }
+
+    #endregion
 
     void Arrange()
     {
@@ -144,7 +199,7 @@ public class Weapon : MonoBehaviour
             bullet.transform.Translate(bullet.transform.up * 1.5f, Space.World);
             
             // Bullet 설정
-            bullet.GetComponent<Bullet>().Init(m_Damage, -100, Vector3.zero); // -1은 무한 관통
+            bullet.GetComponent<Bullet>().Init(m_Damage, -100, Vector3.zero, m_WeaponData.BulletSprite); // -1은 무한 관통
             
             // Bullet 활성화
             bullet.SetActive(true); // 나중에 IObjectPool에 Finish 추가 예정
@@ -156,18 +211,30 @@ public class Weapon : MonoBehaviour
         // 목표물 확인
         if (!m_Scanner.MainTarget) return;
         
-        // Bullet 스폰
-        Bullet bullet = PoolManager.GetInstance<Bullet>(m_BulletPrefab);
-        
-        // Bullet 방향 및 속도 설정
+        // 타깃 방향
         Vector3 position = transform.position;
         Vector3 dir = (m_Scanner.MainTarget.position - position).normalized;
-        bullet.transform.position = position;
-        bullet.transform.rotation = Quaternion.FromToRotation(Vector3.up, dir);
-        bullet.Init(m_Damage, m_Count, dir);
+        
+        // 90도 범위 내에서 발사
+        // 기본 방향을 타깃방향에서 -45도로 offset 설정
+        Vector3 startDir = Quaternion.AngleAxis(-45, Vector3.forward) * dir;
+        float intervalAngle = 90f / (m_ProjectileNum + 1);
+        Vector3 fireDir;
+        
+        // Bullet 스폰
+        for (int i = 1; i <= m_ProjectileNum; i++)
+        {
+            Bullet bullet = PoolManager.GetInstance<Bullet>(m_BulletPrefab);
+            fireDir = Quaternion.AngleAxis(i * intervalAngle, Vector3.forward) * startDir; 
+            
+            // Bullet 방향 및 속도 설정
+            bullet.transform.position = position;
+            bullet.transform.rotation = Quaternion.FromToRotation(Vector3.up, fireDir);
+            bullet.Init(m_Damage, m_Count, fireDir, m_WeaponData.BulletSprite);
 
-        // Bullet 활성화
-        bullet.gameObject.SetActive(true);
+            // Bullet 활성화
+            bullet.gameObject.SetActive(true);
+        }
         
         AudioManager.Get().PlaySfx(AudioManager.Sfx.Range);
     }

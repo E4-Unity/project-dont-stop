@@ -14,12 +14,11 @@ public class Enemy : Actor
     SpriteLibrary m_SpriteLibrary;
     Animator m_Animator;
     Collider2D m_Collider;
-    SortingGroup m_SortingGroup;
 
     #endregion
     
     #region Reference
-
+    
     [SerializeField] EnemyData[] m_EnemyData;
     [SerializeField] GameObject m_GoldPrefab;
     [SerializeField] GameObject m_FloatingTextDamage;
@@ -66,6 +65,7 @@ public class Enemy : Actor
                 m_Health = 0;
                 m_IsDead = true;
                 Dead();
+                AudioManager.Get().PlaySfx(AudioManager.Sfx.Dead);
                 GetReward();
             }
             else
@@ -107,6 +107,11 @@ public class Enemy : Actor
     void OnGameClear_Event()
     {
         Dead();
+    }
+
+    void OnGameOver_Event()
+    {
+        m_Rigidbody.simulated = false;
     }
 
     #endregion
@@ -159,7 +164,6 @@ public class Enemy : Actor
         m_SpriteLibrary = GetComponent<SpriteLibrary>();
         m_Animator = GetComponent<Animator>();
         m_Collider = GetComponent<Collider2D>();
-        m_SortingGroup = GetComponent<SortingGroup>();
     }
 
     protected override void BindEventFunctions()
@@ -169,6 +173,7 @@ public class Enemy : Actor
         TimeManager.Get().OnResume += OnResume_Event;
         SurvivalGameManager.Get().OnGameClear += OnGameClear_Event;
         SurvivalGameManager.Get().OnStageClear += OnStageClear_Event;
+        SurvivalGameManager.Get().OnGameOver += OnGameOver_Event;
     }
 
     protected override void UnbindEventFunctions()
@@ -178,6 +183,7 @@ public class Enemy : Actor
         TimeManager.Get().OnResume -= OnResume_Event;
         SurvivalGameManager.Get().OnGameClear -= OnGameClear_Event;
         SurvivalGameManager.Get().OnStageClear -= OnStageClear_Event;
+        SurvivalGameManager.Get().OnGameOver -= OnGameOver_Event;
     }
 
     protected override void Awake_Event()
@@ -229,13 +235,10 @@ public class Enemy : Actor
         m_Animator.SetBool("Dead", m_IsDead);
         m_Collider.enabled = false;
         m_Rigidbody.simulated = false;
-        m_SortingGroup.sortingLayerName = "Dead";
-        
+        m_SpriteRenderer.sortingLayerName = "Dead";
+
         // 일정 시간 뒤 시체가 사라짐
         StartCoroutine(Disappear());
-
-        // 게임 종료 후 Enemy Cleaner로 발생하는 죽음은 무시
-        AudioManager.Get().PlaySfx(AudioManager.Sfx.Dead);
     }
 
     void GetReward()
@@ -269,7 +272,7 @@ public class Enemy : Actor
         m_Animator.SetBool("Dead", m_IsDead);
         m_Collider.enabled = true;
         m_Rigidbody.simulated = true;
-        m_SortingGroup.sortingLayerName = "Enemy";
+        m_SpriteRenderer.sortingLayerName = "Enemy";
 
         // 체력 설정
         m_Health = MaxHealth;

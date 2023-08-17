@@ -91,10 +91,14 @@ public class SurvivalGameManager : GameManger
         m_Health = m_MaxHealth;
 
         m_Player.gameObject.SetActive(true);
-        //TODO 임시로 캐릭터에게 무기를 쥐어줌
-        m_LevelUp_UI.Select(m_PlayerID % 2);
-
-        AudioManager.Get().PlaySfx(AudioManager.Sfx.Select);
+        
+        //TODO 리팩토링 필요
+        // 선택한 캐릭터 무기 사용
+        if(SurvivalGameState.Get().GetEquipmentComponent().WeaponData.WeaponType == EWeaponType.Melee)
+            m_LevelUp_UI.Select(0);
+        else
+            m_LevelUp_UI.Select(1);
+        
         AudioManager.Get().PlayBgm(true);
         
         StageStart();
@@ -164,6 +168,7 @@ public class SurvivalGameManager : GameManger
         }
         
         // 스테이지 클리어 이벤트
+        AudioManager.Get().PlaySfx(AudioManager.Sfx.LevelUp);
         OnStageClear?.Invoke(CurrentStage);
         
         // 다음 스테이지 시작

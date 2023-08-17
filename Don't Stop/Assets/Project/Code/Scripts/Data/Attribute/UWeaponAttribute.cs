@@ -9,22 +9,38 @@ public class UWeaponAttribute : UAttribute<UWeaponAttribute>
     public int ProjectileNum;
     public float AttackRate;
     public int Penetration;
+    public float Speed;
 
-    public static UWeaponAttribute operator +(UWeaponAttribute _left, UWeaponAttribute _right) => new UWeaponAttribute()
-    {
-        Damage = _left.Damage + _right.Damage,
-        AttackRange = _left.AttackRange + _right.AttackRange,
-        ProjectileNum = _left.ProjectileNum + _right.ProjectileNum,
-        AttackRate = _left.AttackRate + _right.AttackRate,
-        Penetration = _left.Penetration + _right.Penetration
-    };
+    public UWeaponAttribute() {}
 
-    public override UWeaponAttribute Add(UWeaponAttribute _other) => new UWeaponAttribute()
+    public UWeaponAttribute(UWeaponAttribute _copy)
     {
-        Damage = Damage + _other.Damage,
-        AttackRange = AttackRange + _other.AttackRange,
-        ProjectileNum = ProjectileNum + _other.ProjectileNum,
-        AttackRate = AttackRate + _other.AttackRate,
-        Penetration = Penetration + _other.Penetration
-    };
+        if (_copy is null)
+            return;
+
+        Damage = _copy.Damage;
+        AttackRange = _copy.AttackRange;
+        ProjectileNum = _copy.ProjectileNum;
+        AttackRate = _copy.AttackRate;
+        Penetration = _copy.Penetration;
+        Speed = _copy.Speed;
+    }
+
+    protected override UAttributeBase Add(UAttributeBase _other)
+    {
+        if (_other is UWeaponAttribute other)
+        {
+            return new UWeaponAttribute()
+            {
+                Damage = Damage + other.Damage,
+                AttackRange = AttackRange + other.AttackRange,
+                ProjectileNum = ProjectileNum + other.ProjectileNum,
+                AttackRate = AttackRate + other.AttackRate,
+                Penetration = Penetration + other.Penetration,
+                Speed = Speed + other.Speed
+            };
+        }
+
+        return new UWeaponAttribute(this);
+    }
 }

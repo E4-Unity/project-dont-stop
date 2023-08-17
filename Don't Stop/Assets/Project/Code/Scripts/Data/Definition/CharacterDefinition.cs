@@ -1,4 +1,5 @@
 using System;
+using Framework;
 using UnityEngine;
 
 [Serializable]
@@ -6,4 +7,11 @@ using UnityEngine;
 public class CharacterDefinition : EntityDefinition<CharacterDefinition, UBasicAttribute>
 {
     [SerializeField] int m_BaseWeaponID;
+    public override UAttributeDataBase GetAttributeDataBase()
+    {
+        return new UCharacterData()
+        {
+            Definition = this
+        };
+    }
 }

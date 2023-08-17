@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SpriteLibraryAsset: {fileID: 7108339969198208228, guid: de9553086bce3c940a910323ead5670c, type: 3}
   m_Speed: 3
-  m_MaxHealth: 30
+  m_MaxHealth: 600
   m_DropProbability: 0.3
   m_Gold: 20
   m_Exp: 3

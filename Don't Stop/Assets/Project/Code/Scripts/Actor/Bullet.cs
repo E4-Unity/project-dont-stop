@@ -6,8 +6,12 @@ public class Bullet : Actor
     // 컴포넌트
     Rigidbody2D m_Rigidbody;
     protected Rigidbody2D GetRigidbody() => m_Rigidbody;
+
+    SpriteRenderer m_SpriteRenderer;
+    protected SpriteRenderer GetSpriteRenderer() => m_SpriteRenderer;
     
     // 에디터 할당
+    [SerializeField] Sprite m_Sprite;
     [SerializeField] int m_Damage = 10;
     [SerializeField] int m_Penetration = -1;
 
@@ -23,11 +27,14 @@ public class Bullet : Actor
     {
         base.AssignComponents();
         m_Rigidbody = GetComponent<Rigidbody2D>();
+        m_SpriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     protected override void InitializeComponent()
     {
         base.InitializeComponent();
+        m_SpriteRenderer.sprite = m_Sprite;
+        
         if (m_Penetration < 0) return; // 근접 무기 확인
         m_Rigidbody.velocity = m_Velocity;
     }
@@ -68,7 +75,7 @@ public class Bullet : Actor
     #endregion
 
     #region API
-
+    
     public void Init(int _damage, int _penetration, Vector3 _velocity)
     {
         m_Damage = _damage;
@@ -79,6 +86,12 @@ public class Bullet : Actor
         {
             m_Velocity = _velocity * 15;
         }
+    }
+
+    public void Init(int _damage, int _penetration, Vector3 _velocity, Sprite _sprite)
+    {
+        m_Sprite = _sprite;
+        Init(_damage, _penetration, _velocity);
     }
 
     #endregion

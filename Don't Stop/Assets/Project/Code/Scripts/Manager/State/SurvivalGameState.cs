@@ -6,9 +6,11 @@ public class SurvivalGameState : GameState<SurvivalGameState>
 
     PlayerEquipment m_EquipmentComponent;
     PlayerStats m_StatsComponent;
+    SurvivalEquipmentComponent m_SurvivalEquipmentComponent;
 
     public PlayerEquipment GetEquipmentComponent() => m_EquipmentComponent;
     public PlayerStats GetStatsComponent() => m_StatsComponent;
+    public SurvivalEquipmentComponent GetSurvivalEquipmentComponent() => m_SurvivalEquipmentComponent;
 
     #endregion
 
@@ -37,20 +39,21 @@ public class SurvivalGameState : GameState<SurvivalGameState>
     protected override void CopyPlayerState()
     {
         var playerEquipment = PlayerState.Get().GetEquipmentComponent();
-        /* Equipment Component Deep Copy */
-        FSavedAttributeData saveData;
-        
+
         // Weapon
+        var weaponData = playerEquipment.WeaponData;
         UWeaponData weaponCopy = new UWeaponData();
-        playerEquipment.WeaponData.GetSaveData(out saveData);
-        weaponCopy.Init(saveData);
+        weaponCopy.Definition = weaponData.Definition;
+        weaponCopy.Level = weaponData.Level;
+        weaponCopy.Exp = weaponData.Exp;
+
         m_EquipmentComponent.WeaponData = weaponCopy;
 
         // Gears
         foreach (var gearSlot in playerEquipment.GearSlots)
         {
             UGearData gearCopy = new UGearData();
-            gearSlot.Value.GetSaveData(out saveData);
+            FSavedAttributeData saveData = gearSlot.Value.GetSaveData();
             gearCopy.Init(saveData);
             m_EquipmentComponent.GearSlots.Add(gearSlot.Key, gearCopy);
             m_EquipmentComponent.GearDataList.Add(gearCopy);
@@ -61,7 +64,7 @@ public class SurvivalGameState : GameState<SurvivalGameState>
     {
         PlayerState.Get().GetInventoryComponent().Gold += Gold;
         PlayerState.Get().PlayerData.Exp += Exp / 10;
-        DataManager.Get().SaveJsonData();
+        PlayerState.Get().SaveData();
     }
 
     #endregion
@@ -77,6 +80,9 @@ public class SurvivalGameState : GameState<SurvivalGameState>
         
         m_StatsComponent = GetComponent<PlayerStats>();
         GetStatsComponent().Init(GetEquipmentComponent());
+        
+        m_SurvivalEquipmentComponent = GetComponent<SurvivalEquipmentComponent>();
+        m_SurvivalEquipmentComponent.Init();
     }
 
     #endregion

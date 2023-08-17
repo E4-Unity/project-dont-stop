@@ -14,20 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_BaseAttribute:
     m_Attack: 0
-    m_Defense: 10
+    m_Defense: 0
     m_MaxHealth: 0
     m_MovementSpeed: 0
-    m_AttackSpeed: 0
+    m_AttackSpeed: 0.05
   m_NextAttributes:
   - m_Attack: 0
-    m_Defense: 1
+    m_Defense: 0
     m_MaxHealth: 0
     m_MovementSpeed: 0
-    m_AttackSpeed: 0
+    m_AttackSpeed: 0.01
   m_NextExp: 0a000000
   m_NextGold: e8030000
   m_ID: 0
-  m_DisplayName: "\uD14C\uD06C\uB2C8\uCEEC \uC7A5\uAC11"
-  m_Description: 
+  m_DisplayName: "\uC7A5\uAC11"
+  m_Description: "\uACF5\uACA9\uC18D\uB3C4 {0}% \uC99D\uAC00"
   m_Icon: {fileID: -201829820, guid: d71a3dc7aa20fad4f9a99fc76a9254ba, type: 3}
+  m_Cost: 10000
   m_GearType: 1
