@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a874a1e6b68cc846abe9e9f60375ad5, type: 3}
+  m_Name: Gear 0
+  m_EditorClassIdentifier: 
+  m_BaseAttribute:
+    m_Attack: 0
+    m_Defense: 0
+    m_MaxHealth: 0
+    m_MovementSpeed: 0
+    m_AttackSpeed: 0.1
+  m_NextAttributes:
+  - m_Attack: 0
+    m_Defense: 0
+    m_MaxHealth: 0
+    m_MovementSpeed: 0
+    m_AttackSpeed: 0.05
+  m_NextExp: 0a000000
+  m_NextGold: e8030000
+  m_ID: 0
+  m_DisplayName: "\uD14C\uD06C\uB2C8\uCEEC \uC7A5\uAC11"
+  m_Description: "\uC5F0\uC0AC \uC18D\uB3C4 {0}% \uC99D\uAC00"
+  m_Icon: {fileID: -201829820, guid: d71a3dc7aa20fad4f9a99fc76a9254ba, type: 3}
+  m_GearType: 1

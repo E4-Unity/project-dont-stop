@@ -2,14 +2,21 @@ using System;
 
 namespace Framework
 {
-    public abstract class UAttribute<T> where T : UAttribute<T>, new()
+    public abstract class UAttributeBase
     {
-        // 연산자 오버로딩은 추상화할 수 없으므로 별도의 추상 함수(Add) 활용  
-        public static T operator +(UAttribute<T> _a, T _b)
+        public static UAttributeBase operator +(UAttributeBase _left, UAttributeBase _right)
         {
-            return _a.Add(_b);
+            return _left.Add(_right);
         }
 
-        public abstract T Add(T _other);
+        protected abstract UAttributeBase Add(UAttributeBase _other);
+    }
+    
+    public abstract class UAttribute<T> : UAttributeBase where T : UAttribute<T>, new()
+    {
+        public static T operator +(UAttribute<T> _left, UAttributeBase _right)
+        {
+            return ((UAttributeBase)_left + _right) as T;
+        }
     }
 }

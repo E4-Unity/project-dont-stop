@@ -45,8 +45,17 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Ground
+    uniqueID: 2499309757
+    locked: 0
+  - name: Shadow
+    uniqueID: 2144013883
+    locked: 0
   - name: Dead
     uniqueID: 1966164719
+    locked: 0
+  - name: Item
+    uniqueID: 3079016293
     locked: 0
   - name: Enemy
     uniqueID: 2494783107
@@ -57,6 +66,6 @@ TagManager:
   - name: Player
     uniqueID: 1294664347
     locked: 0
-  - name: WeaponBehind
-    uniqueID: 3147964163
+  - name: UI
+    uniqueID: 2280692645
     locked: 0

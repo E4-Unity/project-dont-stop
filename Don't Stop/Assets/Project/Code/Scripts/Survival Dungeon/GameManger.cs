@@ -5,6 +5,7 @@ public abstract class GameManger : GenericMonoSingleton<GameManger>
     #region Field
 
     bool m_IsGameEnd;
+    public bool IsGameEnd => m_IsGameEnd;
 
     #endregion
     

@@ -34,6 +34,11 @@ public class PlayerStats : MonoBehaviour
         m_CharacterData = PlayerState.Get().CharacterData;
         m_EquipmentComponent = _equipmentComponent;
 
+        PlayerState.Get().OnCharacterDataUpdate += _data =>
+        {
+            m_CharacterData = _data;
+            CalculatePlayerStats();
+        };
         m_PlayerData.OnLevelUpdate += _i => CalculatePlayerStats();
         m_CharacterData.OnLevelUpdate += _i => CalculatePlayerStats();
         m_EquipmentComponent.OnGearUpdate += (_type, _data) => CalculatePlayerStats();
@@ -48,15 +53,15 @@ public class PlayerStats : MonoBehaviour
         m_TotalStats = new UBasicAttribute();
         
         // 플레이어 스탯 반영
-        m_TotalStats += m_PlayerData.GetAttribute();
+        m_TotalStats += m_PlayerData.Attribute;
         
         // 캐릭터 스탯 반영
-        m_TotalStats += m_CharacterData.GetAttribute();
+        m_TotalStats += m_CharacterData.Attribute;
         
         // 장비 스탯 반영
         foreach (var gearSlot in m_EquipmentComponent.GearSlots)
         {
-            m_TotalStats += gearSlot.Value.GetAttribute();
+            m_TotalStats += gearSlot.Value.Attribute;
         }
         
         OnUpdate?.Invoke();
