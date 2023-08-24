@@ -6112,13 +6112,14 @@ GameObject:
   - component: {fileID: 480592647}
   - component: {fileID: 480592646}
   - component: {fileID: 480592649}
+  - component: {fileID: 480592650}
   m_Layer: 5
   m_Name: Button Expedition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &480592645
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6183,7 +6184,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 480592647}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 480592650}
+        m_TargetAssemblyTypeName: ChangeSceneButton, Assembly-CSharp
+        m_MethodName: OnChangeScene
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &480592647
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6237,6 +6250,19 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 1
+--- !u!114 &480592650
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 480592644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 102147b804e2b1d4eb5b6d5124e00368, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_TargetScene: 3
 --- !u!1 &489412719
 GameObject:
   m_ObjectHideFlags: 0
