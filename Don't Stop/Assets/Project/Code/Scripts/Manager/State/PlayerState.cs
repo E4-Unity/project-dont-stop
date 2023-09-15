@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -27,9 +27,9 @@ public class PlayerState : GenericMonoSingleton<PlayerState>, IManager, IDataMan
     public PlayerStats GetStatsComponent() => m_StatsComponent;
 
     #endregion
-    
+
     #region State
-    
+
     [SerializeField] UPlayerData m_PlayerData;
     [SerializeField] UCharacterData m_SelectedCharacterData;
     [SerializeField] List<UCharacterData> m_CharacterDataList = new List<UCharacterData>();
@@ -67,7 +67,7 @@ public class PlayerState : GenericMonoSingleton<PlayerState>, IManager, IDataMan
             print("Selected Character is not exist in Data Manager : " + _id);
             return;
         }
-        
+
         CharacterData = GetCharacterData(_id);
         SaveData();
     }
@@ -103,7 +103,7 @@ public class PlayerState : GenericMonoSingleton<PlayerState>, IManager, IDataMan
         m_InventoryComponent = GetComponent<PlayerInventory>();
         m_EquipmentComponent = GetComponent<PlayerEquipment>();
         m_StatsComponent = GetComponent<PlayerStats>();
-        
+
         m_InventoryComponent.Init(GetEquipmentComponent());
         m_EquipmentComponent.Init(GetInventoryComponent());
     }
@@ -155,7 +155,7 @@ public class PlayerState : GenericMonoSingleton<PlayerState>, IManager, IDataMan
             newCharacterData.Init(characterData);
             m_CharacterDataList.Add(newCharacterData);
         }
-        
+
         // Selected Character Data 로드
         SelectCharacter(saveData.CharacterID);
     }
@@ -173,7 +173,7 @@ public class PlayerState : GenericMonoSingleton<PlayerState>, IManager, IDataMan
         {
             saveData.CharacterDataList.Add(characterData.GetSaveData());
         }
-        
+
         // 선택된 캐릭터 저장
         saveData.CharacterID = m_SelectedCharacterData.GetSaveData().DefinitionID;
 
