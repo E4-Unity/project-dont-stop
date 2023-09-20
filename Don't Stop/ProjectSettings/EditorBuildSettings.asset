@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Project/Scenes/Survival Dungeon.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
+  - enabled: 1
+    path: Assets/Project/Scenes/BossRaid.unity
+    guid: a059e04c056bd5b48a85683aa2545306
   m_configObjects: {}
