@@ -4970,7 +4970,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BossSlimeHp: 1000
-  isJumping: 0
 --- !u!50 &1079025260
 Rigidbody2D:
   serializedVersion: 4
