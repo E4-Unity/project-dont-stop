@@ -13,5 +13,4 @@ MonoBehaviour:
   m_Name: System Config
   m_EditorClassIdentifier: 
   m_ManagerClassList: 0000000001000000
-  m_ManagerPrefabList:
-  - {fileID: 2375197910099207921, guid: 8dd409ae0ac543d458840abcaddc007a, type: 3}
+  m_ManagerPrefabList: []

@@ -16014,7 +16014,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1449537500}
         m_TargetAssemblyTypeName: ChangeSceneButton, Assembly-CSharp
-        m_MethodName: OnChangeScene
+        m_MethodName: ChangeScene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -16102,6 +16102,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TargetScene: 2
+  m_TransitionType: 1
 --- !u!1 &1458811196
 GameObject:
   m_ObjectHideFlags: 0

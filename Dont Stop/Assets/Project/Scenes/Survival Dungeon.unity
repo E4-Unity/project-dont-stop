@@ -1104,8 +1104,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 157093210}
-        m_TargetAssemblyTypeName: ChangeSceneButton, Assembly-CSharp
-        m_MethodName: ReloadScene
+        m_TargetAssemblyTypeName: RetryButton, Assembly-CSharp
+        m_MethodName: Retry
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1162,10 +1162,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 157093204}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 102147b804e2b1d4eb5b6d5124e00368, type: 3}
+  m_Script: {fileID: 11500000, guid: 954a3f27b1ba26349ae0c18ead560eee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_TargetScene: 2
 --- !u!1 &168187296
 GameObject:
   m_ObjectHideFlags: 0
@@ -3073,7 +3072,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 8.190476
+  orthographic size: 7.6190476
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -23197,6 +23196,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TargetScene: 1
+  m_TransitionType: 1
 --- !u!114 &2003587254
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23270,7 +23270,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 2003587253}
         m_TargetAssemblyTypeName: ChangeSceneButton, Assembly-CSharp
-        m_MethodName: OnChangeScene
+        m_MethodName: ChangeScene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
