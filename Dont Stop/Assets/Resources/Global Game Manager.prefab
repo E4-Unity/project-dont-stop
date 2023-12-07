@@ -111,9 +111,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2375197910099207923}
+  - component: {fileID: 2200623687188291322}
   - component: {fileID: 2375197910099207922}
   m_Layer: 0
-  m_Name: Level Manager
+  m_Name: Global Game Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -135,6 +136,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2200623687188291322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2375197910099207921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87fb9bb0bddcf304dae7e77aa449b1f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &2375197910099207922
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -151,7 +164,6 @@ MonoBehaviour:
   m_FadeTime: 1
   m_DisableImage: {fileID: 4126846437384510016}
   m_RefreshTime: 0.02
-  m_BufferingTime: 1
 --- !u!1 &2375197910389897840
 GameObject:
   m_ObjectHideFlags: 0

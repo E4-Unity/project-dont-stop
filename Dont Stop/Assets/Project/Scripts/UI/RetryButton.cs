@@ -3,8 +3,18 @@ using UnityEngine.SceneManagement;
 
 public class RetryButton : MonoBehaviour
 {
+    /* 컴포넌트 */
+    SceneLoadingManager sceneLoadingManager;
+    
+    /* MonoBehaviour */
+    void Awake()
+    {
+        // 컴포넌트 할당
+        sceneLoadingManager = GlobalGameManager.Instance.GetSceneLoadingManager();
+    }
+    
     public void Retry()
     {
-        SceneLoadingManager.Instance.ChangeScene(SceneManager.GetActiveScene().buildIndex);
+        sceneLoadingManager.ChangeScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

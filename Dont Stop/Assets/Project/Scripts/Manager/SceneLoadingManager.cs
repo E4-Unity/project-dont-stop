@@ -13,7 +13,7 @@ public enum EBuildScene
     Survival = 2
 }
 
-public class SceneLoadingManager : E4.Utility.GenericMonoSingleton<SceneLoadingManager>
+public class SceneLoadingManager : MonoBehaviour
 {
     // 화면 전환 연출 타입
     public enum ETransitionType
@@ -21,17 +21,6 @@ public class SceneLoadingManager : E4.Utility.GenericMonoSingleton<SceneLoadingM
         None,
         Fade,
         Animation
-    }
-    
-    /* 정적 필드 */
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-    static void GenerateLevelManagerPrefabInstance()
-    {
-        var prefab = Resources.Load<GameObject>("Level Manager");
-        if (prefab is not null)
-        {
-            Instantiate(prefab);
-        }
     }
 
     /* 필드 */
@@ -52,15 +41,9 @@ public class SceneLoadingManager : E4.Utility.GenericMonoSingleton<SceneLoadingM
     AsyncOperation operation;
     WaitForSecondsRealtime waitForFadeTime;
     WaitForSecondsRealtime refreshTime;
-    
-    /* GenericMonoSingleton */
-    protected override void Init()
+
+    void Awake()
     {
-        base.Init();
-        
-        // 모든 씬에서 사용
-        DontDestroyOnLoad(gameObject);
-        
         // 자주 사용하는 변수 초기화
         refreshTime = new WaitForSecondsRealtime(m_RefreshTime);
         waitForFadeTime = new WaitForSecondsRealtime(m_FadeTime);
