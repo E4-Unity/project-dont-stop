@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class SurvivalGameState : GameState<SurvivalGameState>
 {
-    #region Components
-
+    /* 컴포넌트 */
+    PlayerState m_PlayerState;
     PlayerEquipment m_EquipmentComponent;
     PlayerStats m_StatsComponent;
     SurvivalEquipmentComponent m_SurvivalEquipmentComponent;
@@ -11,20 +11,17 @@ public class SurvivalGameState : GameState<SurvivalGameState>
     public PlayerEquipment GetEquipmentComponent() => m_EquipmentComponent;
     public PlayerStats GetStatsComponent() => m_StatsComponent;
     public SurvivalEquipmentComponent GetSurvivalEquipmentComponent() => m_SurvivalEquipmentComponent;
-
-    #endregion
-
-    #region Properties
-
+    
+    /* 필드 */
     [SerializeField] int m_Gold;
+    [SerializeField] int m_Exp;
 
+    /* 프로퍼티 */
     public int Gold
     {
         get => m_Gold;
         set => m_Gold = value;
     }
-    
-    [SerializeField] int m_Exp;
 
     public int Exp
     {
@@ -32,13 +29,27 @@ public class SurvivalGameState : GameState<SurvivalGameState>
         set => m_Exp = value;
     }
     
-    #endregion
+    /* MonoBehaviour */
+    protected override void Awake()
+    {
+        base.Awake();
+        
+        // 컴포넌트 할당 및 초기화
+        m_PlayerState = GlobalGameManager.Instance.GetPlayerState();
+        m_EquipmentComponent = GetComponent<PlayerEquipment>();
+        
+        m_StatsComponent = GetComponent<PlayerStats>();
+        GetStatsComponent().Init(GetEquipmentComponent());
+        
+        m_SurvivalEquipmentComponent = GetComponent<SurvivalEquipmentComponent>();
+        m_SurvivalEquipmentComponent.Init();
+    }
 
-    #region Method
+    /* 메서드 */
 
     protected override void CopyPlayerState()
     {
-        var playerEquipment = PlayerState.Get().GetEquipmentComponent();
+        var playerEquipment = m_PlayerState.GetEquipmentComponent();
 
         // Weapon
         var weaponData = playerEquipment.WeaponData;
@@ -62,28 +73,8 @@ public class SurvivalGameState : GameState<SurvivalGameState>
 
     protected override void UpdatePlayerState()
     {
-        PlayerState.Get().GetInventoryComponent().Gold += Gold;
-        PlayerState.Get().PlayerData.Exp += Exp / 10;
-        PlayerState.Get().SaveData();
+        m_PlayerState.GetInventoryComponent().Gold += Gold;
+        m_PlayerState.PlayerData.Exp += Exp / 10;
+        m_PlayerState.SaveData();
     }
-
-    #endregion
-
-    #region Monobehaviour
-
-    protected override void Awake()
-    {
-        base.Awake();
-        
-        // 컴포넌트 할당 및 초기화
-        m_EquipmentComponent = GetComponent<PlayerEquipment>();
-        
-        m_StatsComponent = GetComponent<PlayerStats>();
-        GetStatsComponent().Init(GetEquipmentComponent());
-        
-        m_SurvivalEquipmentComponent = GetComponent<SurvivalEquipmentComponent>();
-        m_SurvivalEquipmentComponent.Init();
-    }
-
-    #endregion
 }

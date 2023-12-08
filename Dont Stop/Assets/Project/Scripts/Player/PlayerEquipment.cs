@@ -141,9 +141,6 @@ public class PlayerEquipment : MonoBehaviour, ISavable<EquipmentSaveData>
 
     public void SaveData()
     {
-        // 데이터 저장 요청
-        if (!DataManager.RequestSaveData(this)) return;
-        
         // 세이브 데이터 생성
         EquipmentSaveData newSaveData = new EquipmentSaveData();
 
@@ -158,6 +155,9 @@ public class PlayerEquipment : MonoBehaviour, ISavable<EquipmentSaveData>
 
         // 세이브 데이터 저장
         saveData = newSaveData;
+        
+        // 데이터 저장 요청
+        DataManager.RequestSaveData(this);
     }
 
     /* ISavable 인터페이스 */

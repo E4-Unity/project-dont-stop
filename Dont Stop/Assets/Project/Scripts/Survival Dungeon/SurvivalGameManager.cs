@@ -146,7 +146,6 @@ public class SurvivalGameManager : GameManger
     protected override void FindAllSingletons()
     {
         TimeManager.FindInstance();
-        PlayerState.FindInstance();
         SurvivalGameState.FindInstance();
     }
 

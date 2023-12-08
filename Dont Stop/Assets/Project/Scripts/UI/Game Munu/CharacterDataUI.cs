@@ -1,9 +1,11 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class CharacterDataUI : PollingUI
 {
+    /* 컴포넌트 */
+    PlayerState m_PlayerState;
+    
     [SerializeField] Image[] m_CharacterImages;
     [SerializeField] Text m_CharacterName;
     [SerializeField] Text m_CharacterLevel;
@@ -17,15 +19,22 @@ public class CharacterDataUI : PollingUI
 
     [SerializeField] UCharacterData m_CharacterData;
 
+    protected override void Awake_Event()
+    {
+        base.Awake_Event();
+
+        m_PlayerState = GlobalGameManager.Instance.GetPlayerState();
+    }
+
     public void SelectCharacter(int _id)
     {
-        PlayerState.Get().SelectCharacter(_id);
+        m_PlayerState.SelectCharacter(_id);
     }
 
     protected override void Refresh()
     {
-        if (PlayerState.Get() is null) return;
-        m_CharacterData = PlayerState.Get().CharacterData;
+        if (m_PlayerState is null) return;
+        m_CharacterData = m_PlayerState.CharacterData;
 
         foreach (var characterImage in m_CharacterImages)
         {

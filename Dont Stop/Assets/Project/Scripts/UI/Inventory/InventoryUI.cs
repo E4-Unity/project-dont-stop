@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class InventoryUI : MonoBehaviour
@@ -15,7 +12,7 @@ public class InventoryUI : MonoBehaviour
 
     void Awake()
     {
-        m_InventoryComponent = PlayerState.Get().GetInventoryComponent();
+        m_InventoryComponent = GlobalGameManager.Instance.GetPlayerState().GetInventoryComponent();
         m_InventoryComponent.OnInventoryUpdate += Refresh;
         Refresh();
     }

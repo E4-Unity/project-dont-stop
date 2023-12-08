@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class CharacterLevelUpUI : PollingUI
 {
+    /* 컴포넌트 */
+    PlayerState m_PlayerState;
+    
     // Attribute
     [SerializeField] Text m_CharacterNextAttack;
     [SerializeField] Text m_CharacterNextDefense;
@@ -18,11 +21,18 @@ public class CharacterLevelUpUI : PollingUI
     
     [SerializeField] CharacterDefinition m_CharacterDefinition;
 
+    protected override void Awake_Event()
+    {
+        base.Awake_Event();
+
+        m_PlayerState = GlobalGameManager.Instance.GetPlayerState();
+    }
+
     protected override void Refresh()
     {
-        if (PlayerState.Get() is null) return;
-        int nextLevel = PlayerState.Get().CharacterData.Level + 1;
-        m_CharacterDefinition = PlayerState.Get().CharacterData.Definition;
+        if (m_PlayerState is null) return;
+        int nextLevel = m_PlayerState.CharacterData.Level + 1;
+        m_CharacterDefinition = m_PlayerState.CharacterData.Definition;
 
         // Attribute
         UBasicAttribute basicAttribute = m_CharacterDefinition.GetNextAttribute(nextLevel);
@@ -51,9 +61,9 @@ public class CharacterLevelUpUI : PollingUI
                 ? $"(+{basicAttribute.MovementSpeed:F2})"
                 : "";
         if (m_CharacterExp)
-            m_CharacterExp.text = $"Exp {PlayerState.Get().CharacterData.Exp}/{PlayerState.Get().CharacterData.NextExp}";
+            m_CharacterExp.text = $"Exp {m_PlayerState.CharacterData.Exp}/{m_PlayerState.CharacterData.NextExp}";
 
         if (m_CharacterCost)
-            m_CharacterCost.text = $"{PlayerState.Get().CharacterData.NextGold}";
+            m_CharacterCost.text = $"{m_PlayerState.CharacterData.NextGold}";
     }
 }

@@ -1,19 +1,28 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class EnforceButton : MonoBehaviour
 {
+    /* 컴포넌트 */
+    PlayerState m_PlayerState;
+    PlayerInventory m_PlayerInventory;
+
+    /* MonoBehaviour */
+    void Awake()
+    {
+        m_PlayerState = GlobalGameManager.Instance.GetPlayerState();
+        m_PlayerInventory = m_PlayerState.GetInventoryComponent();
+    }
+
     public void EnforceCharacter()
     {
-        PlayerInventory inventory = PlayerState.Get().GetInventoryComponent();
-        UCharacterData characterData = PlayerState.Get().CharacterData;
+        UCharacterData characterData = m_PlayerState.CharacterData;
         
-        if (characterData.NextGold <= inventory.Gold)
+        if (characterData.NextGold <= m_PlayerInventory.Gold)
         {
-            inventory.Gold -= characterData.NextGold;
+            m_PlayerInventory.Gold -= characterData.NextGold;
             characterData.Exp += Mathf.RoundToInt(characterData.NextExp * Random.Range(0.1f, 1f));
-            PlayerState.Get().SaveData();
+            m_PlayerState.SaveData();
         }
     }
     

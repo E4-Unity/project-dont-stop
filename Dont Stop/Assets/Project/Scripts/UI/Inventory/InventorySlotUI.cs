@@ -28,7 +28,7 @@ public class InventorySlotUI : MonoBehaviour
 
     public void Equip()
     {
-        PlayerState.Get().GetInventoryComponent().Equip(m_Data);
+        GlobalGameManager.Instance.GetPlayerState().GetInventoryComponent().Equip(m_Data);
         SystemAudioManager.Get().PlaySelectButton();
     }
 

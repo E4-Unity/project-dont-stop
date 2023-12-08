@@ -12,7 +12,7 @@ public class PlayerStateSaveData
 }
 
 [RequireComponent(typeof(PlayerInventory), typeof(PlayerEquipment), typeof(PlayerStats))]
-public class PlayerState : GenericMonoSingleton<PlayerState>, IManager, ISavable<PlayerStateSaveData>
+public class PlayerState : MonoBehaviour, ISavable<PlayerStateSaveData>
 {
     /* 컴포넌트 */
     
@@ -95,15 +95,16 @@ public class PlayerState : GenericMonoSingleton<PlayerState>, IManager, ISavable
 
     /* MonoBehaviour */
 
-    protected override void Awake()
+    void Awake()
     {
-        base.Awake();
         m_InventoryComponent = GetComponent<PlayerInventory>();
         m_EquipmentComponent = GetComponent<PlayerEquipment>();
         m_StatsComponent = GetComponent<PlayerStats>();
         
         m_InventoryComponent.Init(GetEquipmentComponent());
         m_EquipmentComponent.Init(GetInventoryComponent());
+
+        InitManager();
     }
 
     void LateUpdate()
@@ -152,9 +153,6 @@ public class PlayerState : GenericMonoSingleton<PlayerState>, IManager, ISavable
 
     public void SaveData()
     {
-        // 데이터 저장 요청
-        if (!DataManager.RequestSaveData(this)) return;
-        
         // Player Data 저장
         PlayerStateSaveData newSaveData = new PlayerStateSaveData
         {
@@ -172,6 +170,9 @@ public class PlayerState : GenericMonoSingleton<PlayerState>, IManager, ISavable
 
         // 세이브 데이터 저장
         saveData = newSaveData;
+        
+        // 데이터 저장 요청
+        DataManager.RequestSaveData(this);
     }
 
     /* ISavable 인터페이스 */

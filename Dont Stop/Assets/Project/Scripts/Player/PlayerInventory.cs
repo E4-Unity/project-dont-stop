@@ -169,9 +169,6 @@ public class PlayerInventory : MonoBehaviour, IDataModel, ISavable<InventorySave
 
     public void SaveData()
     {
-        // 데이터 저장 요청
-        if (!DataManager.RequestSaveData(this)) return;
-        
         // 세이브 데이터 생성
         InventorySaveData newSaveData = new InventorySaveData();
         
@@ -196,6 +193,9 @@ public class PlayerInventory : MonoBehaviour, IDataModel, ISavable<InventorySave
 
         // 세이브 데이터 저장
         saveData = newSaveData;
+        
+        // 데이터 저장 요청
+        DataManager.RequestSaveData(this);
     }
 
     /* ISavable 인터페이스 */

@@ -1,40 +1,32 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerStats : MonoBehaviour
 {
-    #region Reference
-
-    [SerializeField] UPlayerData m_PlayerData;
-    [SerializeField] UCharacterData m_CharacterData;
-    [SerializeField] PlayerEquipment m_EquipmentComponent;
-
-    #endregion
-
-    #region State
+    /* 컴포넌트 */
+    PlayerState m_PlayerState;
+    UPlayerData m_PlayerData;
+    UCharacterData m_CharacterData;
+    PlayerEquipment m_EquipmentComponent;
     
-    [SerializeField] UBasicAttribute m_TotalStats;
+    /* 필드 */
+    UBasicAttribute m_TotalStats;
 
+    /* 프로퍼티 */
     public UBasicAttribute TotalStats => m_TotalStats;
 
-    #endregion
-
-    #region Event
-
+    /* 이벤트 */
     public event Action OnUpdate;
 
-    #endregion
-
-    #region API
-
+    /* API */
     public void Init(PlayerEquipment _equipmentComponent)
     {
-        m_PlayerData = PlayerState.Get().PlayerData;
-        m_CharacterData = PlayerState.Get().CharacterData;
+        m_PlayerState = GlobalGameManager.Instance.GetPlayerState();
+        m_PlayerData = m_PlayerState.PlayerData;
+        m_CharacterData = m_PlayerState.CharacterData;
         m_EquipmentComponent = _equipmentComponent;
 
-        PlayerState.Get().OnCharacterDataUpdate += _data =>
+        m_PlayerState.OnCharacterDataUpdate += _data =>
         {
             m_CharacterData = _data;
             CalculatePlayerStats();
@@ -66,7 +58,4 @@ public class PlayerStats : MonoBehaviour
         
         OnUpdate?.Invoke();
     }
-
-    #endregion
-
 }

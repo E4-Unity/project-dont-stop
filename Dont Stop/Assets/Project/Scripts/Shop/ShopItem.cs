@@ -1,4 +1,3 @@
-using System;
 using Framework;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,75 +11,39 @@ public interface IShopItem
 
 public class ShopItem : MonoBehaviour
 {
-    #region Initialization
-
-    #region Reference
-
-    [Header("Initialization")]
+    /* 레퍼런스 */
+    [Header("UI")]
     [SerializeField] Image m_ImageIcon;
     [SerializeField] Text m_TextName;
     [SerializeField] Text m_TextCost;
 
-    #endregion
-
-    #endregion
-    #region Initialization
-
+    [Header("Config")]
     [SerializeField] AttributeDefinitionBase m_ItemDefinition;
+    
+    /* 컴포넌트 */
+    PlayerState m_PlayerState;
+    
+    /* 필드 */
     IShopItem m_ShopItem;
-
-    #endregion
-
-    #region API
-
-    public void Buy()
+    
+    /* MonoBehaviour */
+    void Awake()
     {
-        // null 체크
-        if (m_ShopItem is null) return;
-        
-        // 구매
-        var inventory = PlayerState.Get().GetInventoryComponent();
-        
-        if (inventory.Gold >= m_ShopItem.Cost)
-        {
-            if (inventory.AddItem(m_ItemDefinition))
-            {
-                inventory.Gold -= m_ShopItem.Cost;
-                SystemAudioManager.Get().PlaySelectButton();
-                Destroy(gameObject);
-            }
-        }
+        m_PlayerState = GlobalGameManager.Instance.GetPlayerState();
     }
-
-    #endregion
-
-    #region Method
-
-    // UI 갱신
-    void Refresh()
-    {
-        var cost = m_ShopItem.Cost;
-        
-        m_ImageIcon.sprite = m_ShopItem.Icon;
-        m_TextName.text = m_ShopItem.DisplayName;
-        m_TextCost.text = cost >= 1000 ? $"{cost / 1000f:F1}K" : cost.ToString();
-    }
-
-    #endregion
-
-    #region Monobehaviour
-
+    
     void OnEnable()
     {
+        // TODO 제거
         // null 체크
         OnValidate();
 
         // 이미 구매한 상품이면 제거
-        var inventory = PlayerState.Get().GetInventoryComponent();
+        var inventory = m_PlayerState.GetInventoryComponent();
         if(inventory.CheckItem(m_ItemDefinition))
             Destroy(gameObject);
         
-        var equipmentComponent = PlayerState.Get().GetEquipmentComponent();
+        var equipmentComponent = m_PlayerState.GetEquipmentComponent();
         if(equipmentComponent.CheckItem(m_ItemDefinition))
             Destroy(gameObject);
 
@@ -91,7 +54,7 @@ public class ShopItem : MonoBehaviour
         else
             m_TextCost.color = Color.white;
     }
-
+    
     void OnValidate()
     {
         if (m_ItemDefinition is IShopItem shopItem)
@@ -114,5 +77,35 @@ public class ShopItem : MonoBehaviour
         }
     }
 
-    #endregion
+    /* API */
+    public void Buy()
+    {
+        // null 체크
+        if (m_ShopItem is null) return;
+        
+        // 구매
+        var inventory = m_PlayerState.GetInventoryComponent();
+        
+        if (inventory.Gold >= m_ShopItem.Cost)
+        {
+            if (inventory.AddItem(m_ItemDefinition))
+            {
+                inventory.Gold -= m_ShopItem.Cost;
+                SystemAudioManager.Get().PlaySelectButton();
+                Destroy(gameObject);
+            }
+        }
+    }
+
+    /* 메서드 */
+
+    // UI 갱신
+    void Refresh()
+    {
+        var cost = m_ShopItem.Cost;
+        
+        m_ImageIcon.sprite = m_ShopItem.Icon;
+        m_TextName.text = m_ShopItem.DisplayName;
+        m_TextCost.text = cost >= 1000 ? $"{cost / 1000f:F1}K" : cost.ToString();
+    }
 }

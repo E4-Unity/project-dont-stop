@@ -6,6 +6,10 @@ using UnityEngine.UI;
 
 public class EquipmentSlotUI : MonoBehaviour
 {
+    /* 컴포넌트 */
+    PlayerState m_PlayerState;
+    PlayerEquipment m_EquipmentComponent;
+    
     [SerializeField] Image m_Weapon;
     [SerializeField] Image m_Necklace;
     [SerializeField] Image m_Glove;
@@ -13,12 +17,16 @@ public class EquipmentSlotUI : MonoBehaviour
     [SerializeField] Image m_Belt;
     [SerializeField] Image m_Shoe;
 
-    PlayerEquipment m_EquipmentComponent;
+    /* MonoBehaviour */
+    void Awake()
+    {
+        m_PlayerState = GlobalGameManager.Instance.GetPlayerState();
+    }
 
     void OnEnable()
     {
         // 초기화
-        m_EquipmentComponent = PlayerState.Get().GetEquipmentComponent();
+        m_EquipmentComponent = m_PlayerState.GetEquipmentComponent();
         if (m_EquipmentComponent.WeaponData?.Definition is not null)
         {
             m_Weapon.sprite = m_EquipmentComponent.WeaponData.Definition.Icon;

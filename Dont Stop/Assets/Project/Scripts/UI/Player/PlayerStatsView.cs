@@ -1,21 +1,23 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Presenter;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerStatsView : MonoBehaviour, IPlayerStats
 {
-    // 플레이어 스탯
+    /* 레퍼런스 */
+    [Header("UI")]
     [SerializeField] Text m_TotalAttackText;
     [SerializeField] Text m_TotalMaxHealthText;
 
+    /* 컴포넌트 */
+    PlayerState m_PlayerState;
     PlayerStats m_PlayerStats;
 
+    /* MonoBehaviour */
     void Awake()
     {
-        m_PlayerStats = PlayerState.Get().GetStatsComponent();
+        m_PlayerState = GlobalGameManager.Instance.GetPlayerState();
+        m_PlayerStats = m_PlayerState.GetStatsComponent();
     }
 
     void OnUpdate_Event()
@@ -27,13 +29,13 @@ public class PlayerStatsView : MonoBehaviour, IPlayerStats
 
     void OnEnable()
     {
-        PlayerState.Get().GetStatsComponent().OnUpdate += OnUpdate_Event;
+        m_PlayerState.GetStatsComponent().OnUpdate += OnUpdate_Event;
         OnUpdate_Event();
     }
 
     void OnDisable()
     {
-        PlayerState.Get().GetStatsComponent().OnUpdate -= OnUpdate_Event;
+        m_PlayerState.GetStatsComponent().OnUpdate -= OnUpdate_Event;
     }
 
     #region IPlayerStats

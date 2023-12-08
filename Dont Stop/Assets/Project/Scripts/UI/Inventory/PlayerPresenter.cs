@@ -33,6 +33,9 @@ public interface IDataModel
 
 public class PlayerPresenter : MonoBehaviour
 {
+    /* 컴포넌트 */
+    PlayerState m_PlayerState;
+    
     #region Field
 
     #region Data Models
@@ -138,7 +141,7 @@ public class PlayerPresenter : MonoBehaviour
 
     void BindInventoryView()
     {
-        m_InventoryModel = PlayerState.Get().GetInventoryComponent();
+        m_InventoryModel = m_PlayerState.GetInventoryComponent();
         m_InventoryModel.OnGoldUpdate += OnGoldUpdate_Event;
         m_InventoryModel.OnCrystalUpdate += OnCrystalUpdate_Event;
         m_InventoryModel.ManualBroadcast();
@@ -152,7 +155,7 @@ public class PlayerPresenter : MonoBehaviour
     
     void BindPlayerStatsView()
     {
-        m_PlayerStats = PlayerState.Get().GetStatsComponent().TotalStats;
+        m_PlayerStats = m_PlayerState.GetStatsComponent().TotalStats;
         m_PlayerStats.OnMaxHealthUpdate += OnMaxHealthUpdate_Event;
         m_PlayerStats.OnAttackUpdate += OnAttackUpdate_Event;
         m_PlayerStats.ManualBroadcast();
@@ -166,7 +169,7 @@ public class PlayerPresenter : MonoBehaviour
 
     void BindPlayerDataView()
     {
-        m_PlayerData = PlayerState.Get().PlayerData;
+        m_PlayerData = m_PlayerState.PlayerData;
         m_PlayerData.OnPlayerNameUpdate += OnPlayerNameUpdate_Event;
         m_PlayerData.OnLevelUpdate += OnPlayerLevelUpdate_Event;
         m_PlayerData.OnExpUpdate += OnPlayerExpUpdate_Event;
@@ -188,6 +191,9 @@ public class PlayerPresenter : MonoBehaviour
 
     void Awake()
     {
+        // 컴포넌트 할당
+        m_PlayerState = GlobalGameManager.Instance.GetPlayerState();
+        
         // 프로퍼티 바인딩을 위한 목록 검색
         foreach (var view in m_Views)
         {

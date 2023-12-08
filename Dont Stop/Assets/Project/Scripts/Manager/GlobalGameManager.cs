@@ -23,8 +23,10 @@ public class GlobalGameManager : E4.Utility.GenericMonoSingleton<GlobalGameManag
     
     /* 컴포넌트 */
     SceneLoadingManager sceneLoadingManager;
+    PlayerState playerState;
 
     public SceneLoadingManager GetSceneLoadingManager() => sceneLoadingManager;
+    public PlayerState GetPlayerState() => playerState;
 
     /* GenericMonoSingleton */
     protected override void Init()
@@ -35,7 +37,8 @@ public class GlobalGameManager : E4.Utility.GenericMonoSingleton<GlobalGameManag
         DontDestroyOnLoad(gameObject);
         
         // 컴포넌트 할당
-        sceneLoadingManager = GetComponent<SceneLoadingManager>();
+        sceneLoadingManager = GetComponentInChildren<SceneLoadingManager>();
+        playerState = GetComponentInChildren<PlayerState>();
     }
     
     /* MonoBehaviour */

@@ -5,12 +5,17 @@ using UnityEngine;
 public class SystemManager
 {
     static SystemConfig Config;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSplashScreen)]
+    static void Load()
+    {
+        LoadSystemConfig();
+        LoadDefinitions();
+    }
     
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     static void OnBeforeSceneLoaded()
     {
-        LoadSystemConfig();
-        LoadDefinitions();
         CreateManagers();
     }
 

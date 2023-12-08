@@ -6,6 +6,7 @@ using UnityEngine.U2D.Animation;
 public class Player : Actor
 {
     /* 컴포넌트 */
+    PlayerState m_PlayerState;
     Rigidbody2D m_Rigidbody;
     SpriteRenderer m_Renderer;
     Animator m_Animator;
@@ -42,6 +43,13 @@ public class Player : Actor
     
     public Vector2 InputValue => inputValue;
 
+    protected override void Awake_Event()
+    {
+        base.Awake_Event();
+
+        m_PlayerState = GlobalGameManager.Instance.GetPlayerState();
+    }
+
     /* 메서드 */
     void FlipHand(SpriteRenderer _hand)
     {
@@ -65,7 +73,7 @@ public class Player : Actor
     void Init()
     {
         m_Speed *= SurvivalGameState.Get().GetStatsComponent().TotalStats.MovementSpeed;
-        m_SpriteLibrary.spriteLibraryAsset = m_SpriteLibraryAssets[PlayerState.Get().CharacterData.Definition.ID];
+        m_SpriteLibrary.spriteLibraryAsset = m_SpriteLibraryAssets[m_PlayerState.CharacterData.Definition.ID];
     }
     
     /* Input System */
