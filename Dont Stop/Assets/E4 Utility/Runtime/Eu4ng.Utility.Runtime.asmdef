@@ -1,0 +1,14 @@
+{
+    "name": "Eu4ng.Utility.Runtime",
+    "rootNamespace": "E4.Utility",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

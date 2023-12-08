@@ -1,31 +1,32 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+using E4.Utility;
 using Framework;
 using UnityEngine;
 
 [Serializable]
-public class JsonEquipmentData
+public class EquipmentSaveData
 {
     public FSavedAttributeData WeaponData = new FSavedAttributeData();
     public List<FSavedAttributeData> GearDataList = new List<FSavedAttributeData>();
 }
 
-public class PlayerEquipment : MonoBehaviour, IDataManager
+public class PlayerEquipment : MonoBehaviour, ISavable<EquipmentSaveData>
 {
-    #region Reference
-
-    [SerializeField, ReadOnly] PlayerInventory m_InventoryComponent;
+    /* 컴포넌트 */
+    PlayerInventory m_InventoryComponent;
 
     protected PlayerInventory GetInventoryComponent() => m_InventoryComponent;
-
-    #endregion
     
+    /* 필드 */
     [SerializeField] UWeaponData m_WeaponData = new UWeaponData();
     [SerializeField] List<UGearData> m_GearDataList = new List<UGearData>(); // Inspector 디버깅용
     Dictionary<EGearType, UGearData> m_GearSlots = new Dictionary<EGearType, UGearData>();
+    
+    // ISavable
+    EquipmentSaveData saveData;
 
+    /* 프로퍼티 */
     public List<UGearData> GearDataList => m_GearDataList;
 
     public UWeaponData WeaponData
@@ -35,11 +36,24 @@ public class PlayerEquipment : MonoBehaviour, IDataManager
     }
     public Dictionary<EGearType, UGearData> GearSlots => m_GearSlots;
 
+    /* 이벤트 */
     public event Action<UWeaponData> OnWeaponUpdate;
     public event Action<EGearType, UGearData> OnGearUpdate;
-
-    #region API
     
+    /* MonoBehaviour */
+    void Awake()
+    {
+        OnWeaponUpdate += data =>
+        {
+            SaveData();
+        };
+        OnGearUpdate += (type, data) =>
+        {
+            SaveData();
+        };
+    }
+
+    /* API */
     public void Init(PlayerInventory _playerInventory)
     {
         m_InventoryComponent = _playerInventory;
@@ -107,23 +121,11 @@ public class PlayerEquipment : MonoBehaviour, IDataManager
 
     // TODO RemoveGear
 
-    #endregion
-
-    #region Monobehaviour
-
-    void Awake()
-    {
-        OnWeaponUpdate += _data => SaveData();
-        OnGearUpdate += (_type, _data) => SaveData();
-    }
-
-    #endregion
-
-    #region IDataManager
+    /* IDataManager 인터페이스 */
 
     public void LoadData()
     {
-        var saveData = DataManager.Get().LoadJsonData<JsonEquipmentData>("EquipmentData", "Config/EquipmentData");
+        saveData = DataManager.LoadData(this) ?? new EquipmentSaveData();
 
         m_WeaponData = new UWeaponData();
         m_WeaponData.Init(saveData.WeaponData);
@@ -139,21 +141,27 @@ public class PlayerEquipment : MonoBehaviour, IDataManager
 
     public void SaveData()
     {
+        // 데이터 저장 요청
+        if (!DataManager.RequestSaveData(this)) return;
+        
         // 세이브 데이터 생성
-        JsonEquipmentData saveData = new JsonEquipmentData();
+        EquipmentSaveData newSaveData = new EquipmentSaveData();
 
         // 장비 창 정보 저장
         if (WeaponData.Definition is not null)
-            saveData.WeaponData = WeaponData.GetSaveData();
+            newSaveData.WeaponData = WeaponData.GetSaveData();
 
         foreach (var gearData in m_GearDataList)
         {
-            saveData.GearDataList.Add(gearData.GetSaveData());   
+            newSaveData.GearDataList.Add(gearData.GetSaveData());   
         }
 
         // 세이브 데이터 저장
-        DataManager.Get().Save("EquipmentData", JsonUtility.ToJson(saveData));
+        saveData = newSaveData;
     }
 
-    #endregion
+    /* ISavable 인터페이스 */
+    public EquipmentSaveData Data => saveData;
+
+    public bool IsDirty { get; set; }
 }

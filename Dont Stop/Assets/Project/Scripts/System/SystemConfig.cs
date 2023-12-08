@@ -4,7 +4,6 @@ using UnityEngine;
 
 public enum EManagerClass
 {
-    DataManager,
     PlayerState,
     PoolManager,
     TimeManager
@@ -14,7 +13,6 @@ public class ManagerClassDictionary
 {
     static Dictionary<EManagerClass, Type> ManagerDict = new Dictionary<EManagerClass, Type>()
     {
-        { EManagerClass.DataManager, typeof(DataManager) },
         { EManagerClass.PlayerState, typeof(PlayerState) },
         { EManagerClass.PoolManager, typeof(PoolManager) },
         { EManagerClass.TimeManager, typeof(TimeManager) }

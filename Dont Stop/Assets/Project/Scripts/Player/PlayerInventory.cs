@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
+using E4.Utility;
 using Framework;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 [Serializable]
-public class JsonInventoryData
+public class InventorySaveData
 {
     public List<FSavedAttributeData> WeaponDataList = new List<FSavedAttributeData>();
     public List<FSavedAttributeData> GearDataList = new List<FSavedAttributeData>();
@@ -15,29 +15,30 @@ public class JsonInventoryData
 }
 
 [Serializable]
-public class PlayerInventory : MonoBehaviour, IDataModel, IDataManager
+public class PlayerInventory : MonoBehaviour, IDataModel, ISavable<InventorySaveData>
 {
-    #region Reference
-
-    [SerializeField, ReadOnly] PlayerEquipment m_EquipmentComponent;
+    /* 컴포넌트 */
+    PlayerEquipment m_EquipmentComponent;
 
     protected PlayerEquipment GetEquipmentComponent() => m_EquipmentComponent;
-
-    #endregion
     
+    /* 필드 */
     [SerializeField] int m_Gold;
     [SerializeField] int m_Crystal;
     
     [SerializeReference] List<UAttributeDataBase> m_InventoryList;
     [SerializeField] int m_MaxStack = 10;
+    
+    // ISavable
+    InventorySaveData saveData;
 
+    /* 이벤트 */
     public event Action<int> OnGoldUpdate;
     public event Action<int> OnCrystalUpdate;
 
     public event Action OnInventoryUpdate;
-
-    #region Property
-
+    
+    /* 프로퍼티 */
     public List<UAttributeDataBase> InventoryList => m_InventoryList;
 
     public bool IsFull => m_MaxStack <= m_InventoryList.Count;
@@ -62,15 +63,34 @@ public class PlayerInventory : MonoBehaviour, IDataModel, IDataManager
         }
     }
     
-    #endregion
+    /* MonoBehaviour */
+    void Awake()
+    {
+        m_InventoryList = new List<UAttributeDataBase>(m_MaxStack);
 
+        OnGoldUpdate += amount =>
+        {
+            if (saveData.Gold != amount)
+            {
+                SaveData();
+            }
+        };
+        OnCrystalUpdate += amount =>
+        {
+            if (saveData.Crystal != amount)
+            {
+                SaveData();
+            }
+        };
+        OnInventoryUpdate += SaveData;
+    }
+
+    /* API */
     public void ManualBroadcast()
     {
         OnGoldUpdate?.Invoke(m_Gold);
         OnCrystalUpdate?.Invoke(m_Crystal);
     }
-
-    #region API
 
     public void Init(PlayerEquipment _playerEquipment)
     {
@@ -120,27 +140,11 @@ public class PlayerInventory : MonoBehaviour, IDataModel, IDataManager
 
         return false;
     }
-
-    #endregion
-
-    #region Monobehaviour
-
-    void Awake()
-    {
-        m_InventoryList = new List<UAttributeDataBase>(m_MaxStack);
-
-        OnGoldUpdate += _i => SaveData();
-        OnCrystalUpdate += _i => SaveData();
-        OnInventoryUpdate += SaveData;
-    }
-
-    #endregion
-
-    #region IDataManager
-
+    
+    /* IDataManager 인터페이스 */
     public void LoadData()
     {
-        var saveData = DataManager.Get().LoadJsonData<JsonInventoryData>("InventoryData", "Config/InventoryData");
+        saveData = DataManager.LoadData(this) ?? new InventorySaveData();
 
         // weapon 추가
         foreach (var weaponData in saveData.WeaponDataList)
@@ -165,8 +169,11 @@ public class PlayerInventory : MonoBehaviour, IDataModel, IDataManager
 
     public void SaveData()
     {
+        // 데이터 저장 요청
+        if (!DataManager.RequestSaveData(this)) return;
+        
         // 세이브 데이터 생성
-        JsonInventoryData saveData = new JsonInventoryData();
+        InventorySaveData newSaveData = new InventorySaveData();
         
         // 인벤토리 아이템 저장
         foreach (var itemData in m_InventoryList)
@@ -175,21 +182,24 @@ public class PlayerInventory : MonoBehaviour, IDataModel, IDataManager
             {
                 // TODO 인터페이스로 대체
                 case UWeaponData weaponData:
-                    saveData.WeaponDataList.Add(weaponData.GetSaveData());
+                    newSaveData.WeaponDataList.Add(weaponData.GetSaveData());
                     break;
                 case UGearData gearData:
-                    saveData.GearDataList.Add(gearData.GetSaveData());
+                    newSaveData.GearDataList.Add(gearData.GetSaveData());
                     break;
             }
         }
         
         // 재화 저장
-        saveData.Gold = Gold;
-        saveData.Crystal = Crystal;
+        newSaveData.Gold = Gold;
+        newSaveData.Crystal = Crystal;
 
         // 세이브 데이터 저장
-        DataManager.Get().Save("InventoryData", JsonUtility.ToJson(saveData));
+        saveData = newSaveData;
     }
 
-    #endregion
+    /* ISavable 인터페이스 */
+    public InventorySaveData Data => saveData;
+
+    public bool IsDirty { get; set; }
 }

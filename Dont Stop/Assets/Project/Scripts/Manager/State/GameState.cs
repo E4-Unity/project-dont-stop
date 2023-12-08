@@ -1,5 +1,3 @@
-using System;
-using UnityEditor;
 using UnityEngine;
 
 public abstract class GameState<T> : GenericMonoSingleton<T> where T : GameState<T>

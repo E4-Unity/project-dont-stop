@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 public interface IManager
 {
@@ -20,10 +17,16 @@ public class ManagerFactory : MonoBehaviour
             // 매니저 생성
             ManagerObject = new GameObject(_typeArray[i].Name);
             var iManager = ManagerObject.AddComponent(_typeArray[i]) as IManager;
-            if(iManager is null) // IManager 인터페이스 구현 여부 확인
-                Debug.Log(_typeArray[i].Name + " is not IManager");
-            else
-                managers[i] = iManager;
+            if (iManager is null)
+            {
+#if UNITY_EDITOR
+                Debug.LogWarning(_typeArray[i].Name + " is not IManager");
+#endif
+                Destroy(ManagerObject);
+                continue;
+            }
+            
+            managers[i] = iManager;
 
             // 매니저 설정
             if(!_canDestroy)

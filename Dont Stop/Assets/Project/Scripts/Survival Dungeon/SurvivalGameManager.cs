@@ -148,7 +148,6 @@ public class SurvivalGameManager : GameManger
         TimeManager.FindInstance();
         PlayerState.FindInstance();
         SurvivalGameState.FindInstance();
-        DataManager.FindInstance();
     }
 
     void StageStart()

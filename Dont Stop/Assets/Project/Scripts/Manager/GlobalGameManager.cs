@@ -1,3 +1,5 @@
+using System;
+using E4.Utility;
 using UnityEngine;
 
 public class GlobalGameManager : E4.Utility.GenericMonoSingleton<GlobalGameManager>
@@ -23,8 +25,6 @@ public class GlobalGameManager : E4.Utility.GenericMonoSingleton<GlobalGameManag
     SceneLoadingManager sceneLoadingManager;
 
     public SceneLoadingManager GetSceneLoadingManager() => sceneLoadingManager;
-    
-    /* 필드 */
 
     /* GenericMonoSingleton */
     protected override void Init()
@@ -36,5 +36,11 @@ public class GlobalGameManager : E4.Utility.GenericMonoSingleton<GlobalGameManag
         
         // 컴포넌트 할당
         sceneLoadingManager = GetComponent<SceneLoadingManager>();
+    }
+    
+    /* MonoBehaviour */
+    void LateUpdate()
+    {
+        DataManager.HandleRequests();
     }
 }

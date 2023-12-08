@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using E4.Utility;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 [Serializable]
-public class JsonPlayerData
+public class PlayerStateSaveData
 {
     public FSavedAttributeData PlayerData = new FSavedAttributeData();
     public List<FSavedAttributeData> CharacterDataList = new List<FSavedAttributeData>();
@@ -12,10 +12,10 @@ public class JsonPlayerData
 }
 
 [RequireComponent(typeof(PlayerInventory), typeof(PlayerEquipment), typeof(PlayerStats))]
-public class PlayerState : GenericMonoSingleton<PlayerState>, IManager, IDataManager
+public class PlayerState : GenericMonoSingleton<PlayerState>, IManager, ISavable<PlayerStateSaveData>
 {
-    #region Components
-
+    /* 컴포넌트 */
+    
     PlayerInventory m_InventoryComponent;
     PlayerEquipment m_EquipmentComponent;
     PlayerStats m_StatsComponent;
@@ -25,18 +25,17 @@ public class PlayerState : GenericMonoSingleton<PlayerState>, IManager, IDataMan
     public PlayerEquipment GetEquipmentComponent() => m_EquipmentComponent;
 
     public PlayerStats GetStatsComponent() => m_StatsComponent;
-
-    #endregion
     
-    #region State
+    /* 필드 */
     
     [SerializeField] UPlayerData m_PlayerData;
     [SerializeField] UCharacterData m_SelectedCharacterData;
     [SerializeField] List<UCharacterData> m_CharacterDataList = new List<UCharacterData>();
+    
+    // ISavable
+    PlayerStateSaveData saveData;
 
-    #endregion
-
-    #region Properties
+    /* 프로퍼티 */
 
     public UPlayerData PlayerData
     {
@@ -55,9 +54,7 @@ public class PlayerState : GenericMonoSingleton<PlayerState>, IManager, IDataMan
         }
     }
 
-    #endregion
-
-    #region API
+    /* API */
 
     public void SelectCharacter(int _id)
     {
@@ -69,12 +66,15 @@ public class PlayerState : GenericMonoSingleton<PlayerState>, IManager, IDataMan
         }
         
         CharacterData = GetCharacterData(_id);
-        SaveData();
+
+        // TODO 리팩토링
+        if (saveData.CharacterID != _id)
+        {
+            SaveData();
+        }
     }
 
-    #endregion
-
-    #region Method
+    /* 메서드 */
 
     UCharacterData GetCharacterData(int _id)
     {
@@ -93,9 +93,7 @@ public class PlayerState : GenericMonoSingleton<PlayerState>, IManager, IDataMan
         return characterData;
     }
 
-    #endregion
-
-    #region Monobehaviour
+    /* MonoBehaviour */
 
     protected override void Awake()
     {
@@ -108,23 +106,17 @@ public class PlayerState : GenericMonoSingleton<PlayerState>, IManager, IDataMan
         m_EquipmentComponent.Init(GetInventoryComponent());
     }
 
-    void Update()
+    void LateUpdate()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            DataManager.Get().SaveAll();
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
-#else
-            Application.Quit();
 #endif
         }
     }
 
-    #endregion
-
-    #region IManager
-
+    /* IManager 인터페이스 */
     public void InitManager()
     {
         LoadData();
@@ -133,13 +125,11 @@ public class PlayerState : GenericMonoSingleton<PlayerState>, IManager, IDataMan
         GetStatsComponent().Init(GetEquipmentComponent());
     }
 
-    #endregion
-
-    #region IDataManager
+    /* IDataManager 인터페이스 */
 
     public void LoadData()
     {
-        var saveData = DataManager.Get().LoadJsonData<JsonPlayerData>("PlayerData", "Config/PlayerData");
+        saveData = DataManager.LoadData(this) ?? new PlayerStateSaveData();
 
         // Player Data 로드
         m_PlayerData = new UPlayerData()
@@ -162,8 +152,11 @@ public class PlayerState : GenericMonoSingleton<PlayerState>, IManager, IDataMan
 
     public void SaveData()
     {
+        // 데이터 저장 요청
+        if (!DataManager.RequestSaveData(this)) return;
+        
         // Player Data 저장
-        JsonPlayerData saveData = new JsonPlayerData
+        PlayerStateSaveData newSaveData = new PlayerStateSaveData
         {
             PlayerData = m_PlayerData.GetSaveData()
         };
@@ -171,15 +164,18 @@ public class PlayerState : GenericMonoSingleton<PlayerState>, IManager, IDataMan
         // Character Data 저장
         foreach (var characterData in m_CharacterDataList)
         {
-            saveData.CharacterDataList.Add(characterData.GetSaveData());
+            newSaveData.CharacterDataList.Add(characterData.GetSaveData());
         }
         
         // 선택된 캐릭터 저장
-        saveData.CharacterID = m_SelectedCharacterData.GetSaveData().DefinitionID;
+        newSaveData.CharacterID = m_SelectedCharacterData.GetSaveData().DefinitionID;
 
         // 세이브 데이터 저장
-        DataManager.Get().Save("PlayerData", JsonUtility.ToJson(saveData));
+        saveData = newSaveData;
     }
 
-    #endregion
+    /* ISavable 인터페이스 */
+    public PlayerStateSaveData Data => saveData;
+
+    public bool IsDirty { get; set; }
 }

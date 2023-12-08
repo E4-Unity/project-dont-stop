@@ -45,7 +45,7 @@ public class SystemManager
         Debug.Log("SystemManager > Init Managers");
         foreach (var manager in managers)
         {
-            manager.InitManager();
+            manager?.InitManager();
         }
 
     }
