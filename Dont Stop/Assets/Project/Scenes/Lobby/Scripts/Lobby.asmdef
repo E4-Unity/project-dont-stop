@@ -1,0 +1,17 @@
+{
+    "name": "Lobby",
+    "rootNamespace": "",
+    "references": [
+        "GUID:3f6a5d140e1c3cf4fabf175b23e3bca7",
+        "GUID:547110c949cc48248865e1885a560882"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,19 @@
+{
+    "name": "DontStop",
+    "rootNamespace": "",
+    "references": [
+        "GUID:41524c21c95e5fe4dbc5b48bd21995a4",
+        "GUID:75469ad4d38634e559750d17036d5f7c",
+        "GUID:547110c949cc48248865e1885a560882",
+        "GUID:ee9a24cf48d118d45b3bf2d8716de846"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
