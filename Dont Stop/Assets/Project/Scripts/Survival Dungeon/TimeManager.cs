@@ -3,68 +3,46 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class TimeManager : GenericMonoSingleton<TimeManager>
+public class TimeManager : MonoBehaviour
 {
-    #region State
-
+    /* 필드 */
     [SerializeField, ReadOnly] bool m_IsPaused = false;
     [SerializeField, ReadOnly] float m_TotalPlayTime;
     [SerializeField, ReadOnly] float m_PlayTime;
     [SerializeField] float m_MaxPlayTime = 20f;
+    
+    IEnumerator m_PlayTimer;
 
+    /* 프로퍼티 */
     public bool IsPaused => m_IsPaused;
     public float TotalPlayTime => m_TotalPlayTime;
     public float PlayTime => m_PlayTime;
     public float MaxPlayTime => m_MaxPlayTime;
-    
-    #endregion
 
-    #region Coroutine
-
-    IEnumerator m_PlayTimer;
-
-    #endregion
-
-    #region Event
-
+    /* 이벤트 */
     public event Action OnPause;
     public event Action OnResume;
     public event Action OnTimerReset;
     public event Action OnTimerStart;
     public event Action OnTimerFinish;
 
-    #endregion
-
-    #region Method
-
-    IEnumerator PlayTimer(int _waitTime)
+    /* MonoBehaviour */
+    void Awake()
     {
-        yield return new WaitForSecondsRealtime(_waitTime);
-        OnTimerStart?.Invoke();
+        SceneManager.sceneLoaded += OnSceneLoaded_Event;
+    }
+    
+    /* 이벤트 함수 */
+    void OnSceneLoaded_Event(Scene scene, LoadSceneMode sceneMode)
+    {
+        // 정지된 상태라면 씬 전환 시 정지 해제
+        if (!m_IsPaused) return;
         
-        while (true)
-        {
-            yield return null;
-            m_TotalPlayTime += Time.deltaTime;
-            m_PlayTime += Time.deltaTime;
-
-            if (m_PlayTime > m_MaxPlayTime)
-            {
-                m_PlayTime = m_MaxPlayTime;
-                OnTimerFinish?.Invoke();
-            }
-        }
+        m_IsPaused = false;
+        Time.timeScale = 1;
     }
 
-    public void GameRetry()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
-
-    #endregion
-
-    #region API
-
+    /* API */
     public void StartGame(int _maxPlayTime, int _waitTime)
     {
         // 기존 타이머 제거
@@ -96,16 +74,24 @@ public class TimeManager : GenericMonoSingleton<TimeManager>
         OnResume?.Invoke();
         StartCoroutine(m_PlayTimer);
     }
-
-    #endregion
-
-    #region Monobehaviour
-
-    protected override void OnDestroy()
+    
+    /* 메서드 */
+    IEnumerator PlayTimer(int _waitTime)
     {
-        base.OnDestroy();
-        Time.timeScale = 1;
-    }
+        yield return new WaitForSecondsRealtime(_waitTime);
+        OnTimerStart?.Invoke();
+        
+        while (true)
+        {
+            yield return null;
+            m_TotalPlayTime += Time.deltaTime;
+            m_PlayTime += Time.deltaTime;
 
-    #endregion
+            if (m_PlayTime > m_MaxPlayTime)
+            {
+                m_PlayTime = m_MaxPlayTime;
+                OnTimerFinish?.Invoke();
+            }
+        }
+    }
 }

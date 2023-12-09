@@ -9577,7 +9577,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1670a97f62d9f714aace6edfdc60cbd4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_InventoryComponent: {fileID: 0}
   m_WeaponData:
     m_Attribute:
       Damage: 0
@@ -9604,39 +9603,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 355f115482cc421489f6a09ec833f0b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_PlayerData:
-    m_Attribute:
-      m_Attack: 0
-      m_Defense: 0
-      m_MaxHealth: 0
-      m_MovementSpeed: 0
-      m_AttackSpeed: 0
-    m_Level: 0
-    m_Exp: 0
-    m_NextExp: 0
-    m_NextGold: 0
-    m_Definition: {fileID: 0}
-    m_PlayerName: 
-    m_PlayerID: 0
-  m_CharacterData:
-    m_Attribute:
-      m_Attack: 0
-      m_Defense: 0
-      m_MaxHealth: 0
-      m_MovementSpeed: 0
-      m_AttackSpeed: 0
-    m_Level: 0
-    m_Exp: 0
-    m_NextExp: 0
-    m_NextGold: 0
-    m_Definition: {fileID: 0}
-  m_EquipmentComponent: {fileID: 0}
-  m_TotalStats:
-    m_Attack: 0
-    m_Defense: 0
-    m_MaxHealth: 0
-    m_MovementSpeed: 0
-    m_AttackSpeed: 0
 --- !u!114 &4798372794628580732
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9650,7 +9616,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ManagerGroup: {fileID: 4798372795478998801}
-  m_ManagerClasses: 0200000001000000
+  m_ManagerClasses: 01000000
   m_GameObjectsToActivate:
   - {fileID: 4798372795248058439}
   - {fileID: 4798372794873102225}

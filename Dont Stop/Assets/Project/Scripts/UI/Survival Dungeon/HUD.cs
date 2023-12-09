@@ -31,10 +31,11 @@ public class HUD : MonoBehaviour
     /* MonoBehaviour */
     void Awake()
     {
+        // 컴포넌트 할당
         m_Text = GetComponent<Text>();
         m_Slider = GetComponent<Slider>();
         m_GameManager = SurvivalGameManager.Get();
-        m_TimeManager = TimeManager.Get();
+        m_TimeManager = GlobalGameManager.Instance.GetTimeManager();
         m_GameState = SurvivalGameState.Get();
     }
 

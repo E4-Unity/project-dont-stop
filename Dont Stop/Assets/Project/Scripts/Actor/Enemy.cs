@@ -1,7 +1,6 @@
 using System.Collections;
 using Framework;
 using UnityEngine;
-using UnityEngine.Rendering;
 using UnityEngine.U2D.Animation;
 using Random = UnityEngine.Random;
 
@@ -9,6 +8,7 @@ public class Enemy : Actor
 {
     #region Components
 
+    TimeManager m_TimeManager;
     Rigidbody2D m_Rigidbody;
     SpriteRenderer m_SpriteRenderer;
     SpriteLibrary m_SpriteLibrary;
@@ -121,7 +121,7 @@ public class Enemy : Actor
     void FixedUpdate()
     {
         // 게임 정지
-        if (TimeManager.Get().IsPaused) return;
+        if (m_TimeManager.IsPaused) return;
 
         if (m_IsDead || m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Hit")) return;
         
@@ -169,26 +169,51 @@ public class Enemy : Actor
     protected override void BindEventFunctions()
     {
         base.BindEventFunctions();
-        TimeManager.Get().OnPause += OnPause_Event;
-        TimeManager.Get().OnResume += OnResume_Event;
-        SurvivalGameManager.Get().OnGameClear += OnGameClear_Event;
-        SurvivalGameManager.Get().OnStageClear += OnStageClear_Event;
-        SurvivalGameManager.Get().OnGameOver += OnGameOver_Event;
+
+        // Time Manager 이벤트 바인딩
+        if (m_TimeManager)
+        {
+            m_TimeManager.OnPause += OnPause_Event;
+            m_TimeManager.OnResume += OnResume_Event;
+        }
+        
+        // SurvivalGameManager 이벤트 바인딩
+        SurvivalGameManager survivalGameManager = SurvivalGameManager.Get();
+        if (survivalGameManager)
+        {
+            survivalGameManager.OnGameClear += OnGameClear_Event;
+            survivalGameManager.OnStageClear += OnStageClear_Event;
+            survivalGameManager.OnGameOver += OnGameOver_Event;
+        }
     }
 
     protected override void UnbindEventFunctions()
     {
         base.UnbindEventFunctions();
-        TimeManager.Get().OnPause -= OnPause_Event;
-        TimeManager.Get().OnResume -= OnResume_Event;
-        SurvivalGameManager.Get().OnGameClear -= OnGameClear_Event;
-        SurvivalGameManager.Get().OnStageClear -= OnStageClear_Event;
-        SurvivalGameManager.Get().OnGameOver -= OnGameOver_Event;
+
+        // Time Manager 이벤트 언바인딩
+        if (m_TimeManager)
+        {
+            m_TimeManager.OnPause -= OnPause_Event;
+            m_TimeManager.OnResume -= OnResume_Event;
+        }
+        
+        // SurvivalGameManager 이벤트 언바인딩
+        SurvivalGameManager survivalGameManager = SurvivalGameManager.Get();
+        if (survivalGameManager)
+        {
+            survivalGameManager.OnGameClear -= OnGameClear_Event;
+            survivalGameManager.OnStageClear -= OnStageClear_Event;
+            survivalGameManager.OnGameOver -= OnGameOver_Event;
+        }
     }
 
     protected override void Awake_Event()
     {
         base.Awake_Event();
+        
+        // 컴포넌트 할당
+        m_TimeManager = GlobalGameManager.Instance.GetTimeManager();
         
         // 변수 할당
         waitForFixedUpdate = new WaitForFixedUpdate();

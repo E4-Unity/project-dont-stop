@@ -5,6 +5,9 @@ using UnityEngine.Serialization;
 
 public class SurvivalGameManager : GameManger
 {
+    /* 컴포넌트 */
+    TimeManager m_TimeManager;
+    
     #region Static
 
     public new static SurvivalGameManager Get() => (SurvivalGameManager)GameManger.Get();
@@ -80,7 +83,7 @@ public class SurvivalGameManager : GameManger
     
     void BindEventFunctions()
     {
-        TimeManager.Get().OnTimerFinish += GameOver;
+        m_TimeManager.OnTimerFinish += GameOver;
     }
 
     #region GameManager
@@ -128,7 +131,7 @@ public class SurvivalGameManager : GameManger
     protected override void OnGameFinish_Event()
     {
         base.OnGameFinish_Event();
-        TimeManager.Get().PauseGame();
+        m_TimeManager.PauseGame();
     }
 
     protected override void OnGameExit_Event()
@@ -145,14 +148,13 @@ public class SurvivalGameManager : GameManger
     
     protected override void FindAllSingletons()
     {
-        TimeManager.FindInstance();
         SurvivalGameState.FindInstance();
     }
 
     void StageStart()
     {
         OnStageStart?.Invoke(m_StageCount);
-        TimeManager.Get().StartGame(m_MaxStageTime, m_StageWaitTIme);
+        m_TimeManager.StartGame(m_MaxStageTime, m_StageWaitTIme);
         m_StageCount++;
     }
 
@@ -224,6 +226,11 @@ public class SurvivalGameManager : GameManger
     protected override void Awake()
     {
         base.Awake();
+        
+        // 컴포넌트 할당
+        m_TimeManager = GlobalGameManager.Instance.GetTimeManager();
+        
+        // 타깃 프레임 설정
         Application.targetFrameRate = 60;
     }
 

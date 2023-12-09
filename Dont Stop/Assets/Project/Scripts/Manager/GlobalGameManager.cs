@@ -1,4 +1,3 @@
-using System;
 using E4.Utility;
 using UnityEngine;
 
@@ -24,9 +23,11 @@ public class GlobalGameManager : E4.Utility.GenericMonoSingleton<GlobalGameManag
     /* 컴포넌트 */
     SceneLoadingManager sceneLoadingManager;
     PlayerState playerState;
+    TimeManager timeManager;
 
     public SceneLoadingManager GetSceneLoadingManager() => sceneLoadingManager;
     public PlayerState GetPlayerState() => playerState;
+    public TimeManager GetTimeManager() => timeManager;
 
     /* GenericMonoSingleton */
     protected override void Init()
@@ -39,6 +40,7 @@ public class GlobalGameManager : E4.Utility.GenericMonoSingleton<GlobalGameManag
         // 컴포넌트 할당
         sceneLoadingManager = GetComponentInChildren<SceneLoadingManager>();
         playerState = GetComponentInChildren<PlayerState>();
+        timeManager = GetComponentInChildren<TimeManager>();
     }
     
     /* MonoBehaviour */

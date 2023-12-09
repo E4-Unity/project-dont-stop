@@ -6,6 +6,9 @@ using Random = UnityEngine.Random;
 
 public class Spawner : MonoBehaviour
 {
+    /* 컴포넌트 */
+    TimeManager m_TimeManager;
+    
     // 에디터 설정
     [SerializeField] LevelConfig[] m_LevelConfig;
 
@@ -29,6 +32,9 @@ public class Spawner : MonoBehaviour
 
     void Awake()
     {
+        // 컴포넌트 할당
+        m_TimeManager = GlobalGameManager.Instance.GetTimeManager();
+        
         m_SpawnPoints = GetComponentsInChildren<Transform>();
     }
 
@@ -45,7 +51,7 @@ public class Spawner : MonoBehaviour
     void Update()
     {
         // 게임 정지
-        if (TimeManager.Get().IsPaused) return;
+        if (m_TimeManager.IsPaused) return;
 
         timer += Time.deltaTime;
 

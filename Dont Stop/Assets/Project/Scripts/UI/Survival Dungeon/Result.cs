@@ -39,7 +39,7 @@ public class Result : MonoBehaviour
         m_GameResult.SetActive(true);
         
         // 전체 플레이 시간 표시
-        var totalPlayTIme = TimeManager.Get().TotalPlayTime;
+        var totalPlayTIme = GlobalGameManager.Instance.GetTimeManager().TotalPlayTime;
         var minutes = Mathf.FloorToInt(totalPlayTIme / 60);
         var seconds = Mathf.FloorToInt(totalPlayTIme % 60);
         m_TextClearTime.text = $"{minutes:D2}:{seconds:D2}";

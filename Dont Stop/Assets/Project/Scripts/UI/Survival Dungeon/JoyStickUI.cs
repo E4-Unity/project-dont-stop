@@ -1,17 +1,22 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class JoyStickUI : MonoBehaviour
 {
-    #region Event Functions
-
-    void OnStart_Event()
+    /* 필드 */
+    bool isEventBound;
+    
+    /* MonoBehaviour*/
+    void Start()
     {
-        
+        BindEventFunctions();
     }
 
+    void OnDestroy()
+    {
+        UnbindEventFunctions();
+    }
+    
+    /* 이벤트 함수 */
     void OnPause_Event()
     {
         transform.localScale = Vector3.zero;
@@ -22,45 +27,28 @@ public class JoyStickUI : MonoBehaviour
         transform.localScale = Vector3.one;
     }
 
-    #endregion
-
-    #region Method
-
+    /* 메서드 */
     void BindEventFunctions()
     {
-        var timeManager = TimeManager.Get();
+        // 중복 호출 방지
+        if (isEventBound) return;
+        isEventBound = true;
+        
+        // TimeManger 이벤트 바인딩
+        var timeManager = GlobalGameManager.Instance.GetTimeManager();
         timeManager.OnPause += OnPause_Event;
         timeManager.OnResume += OnResume_Event;
     }
 
     void UnbindEventFunctions()
     {
-        var timeManager = TimeManager.Get();
-        if (timeManager)
-        {
-            timeManager.OnPause -= OnPause_Event;
-            timeManager.OnResume -= OnResume_Event;
-        }
+        // 중복 호출 방지
+        if (!isEventBound) return;
+        isEventBound = false;
+        
+        // TimeManger 이벤트 언바인딩
+        var timeManager = GlobalGameManager.Instance.GetTimeManager();
+        timeManager.OnPause -= OnPause_Event;
+        timeManager.OnResume -= OnResume_Event;
     }
-
-    #endregion
-
-    #region Monobehaviour
-
-    void Start()
-    {
-        BindEventFunctions();
-    }
-
-    void OnEnable()
-    {
-        BindEventFunctions();
-    }
-
-    void OnDisable()
-    {
-        UnbindEventFunctions();
-    }
-
-    #endregion
 }

@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class AchieveManager : MonoBehaviour
@@ -10,6 +9,9 @@ public class AchieveManager : MonoBehaviour
         UnlockPotato,
         UnlockBean
     }
+    
+    /* 컴포넌트 */
+    TimeManager m_TimeManager;
     
     /* 필드 */
     [Header("[Reference]")]
@@ -56,7 +58,7 @@ public class AchieveManager : MonoBehaviour
                 isAchieve = SurvivalGameManager.Get().Kill >= 10;
                 break;
             case Achieve.UnlockBean:
-                isAchieve = Mathf.Approximately(TimeManager.Get().PlayTime, TimeManager.Get().MaxPlayTime); // TODO 클리어 정보 따로 만들 예정
+                isAchieve = Mathf.Approximately(m_TimeManager.PlayTime, m_TimeManager.MaxPlayTime); // TODO 클리어 정보 따로 만들 예정
                 break;
         }
 
@@ -87,6 +89,10 @@ public class AchieveManager : MonoBehaviour
     /* MonoBehaviour */
     void Awake()
     {
+        // 컴포넌트 할당
+        m_TimeManager = GlobalGameManager.Instance.GetTimeManager();
+        
+        // 초기화
         m_Achieves = (Achieve[])Enum.GetValues(typeof(Achieve));
 
         waitForSecondsRealtime = new WaitForSecondsRealtime(5);

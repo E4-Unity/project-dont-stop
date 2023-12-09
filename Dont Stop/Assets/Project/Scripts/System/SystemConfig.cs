@@ -5,8 +5,7 @@ using UnityEngine;
 public enum EManagerClass
 {
     PlayerState,
-    PoolManager,
-    TimeManager
+    PoolManager
 }
 
 public class ManagerClassDictionary
@@ -15,7 +14,6 @@ public class ManagerClassDictionary
     {
         { EManagerClass.PlayerState, typeof(PlayerState) },
         { EManagerClass.PoolManager, typeof(PoolManager) },
-        { EManagerClass.TimeManager, typeof(TimeManager) }
     };
 
     public static Type[] Get(EManagerClass[] _managerClasses)

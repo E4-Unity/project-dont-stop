@@ -105,16 +105,22 @@ public class Player : Actor
     protected override void BindEventFunctions()
     {
         base.BindEventFunctions();
-        TimeManager.Get().OnPause += OnPause_Event;
-        TimeManager.Get().OnResume += OnResume_Event;
+
+        var timeManager = GlobalGameManager.Instance.GetTimeManager();
+        
+        timeManager.OnPause += OnPause_Event;
+        timeManager.OnResume += OnResume_Event;
         SurvivalGameManager.Get().OnGameEnd += OnGameEnd_Event;
     }
 
     protected override void UnbindEventFunctions()
     {
         base.UnbindEventFunctions();
-        TimeManager.Get().OnPause -= OnPause_Event;
-        TimeManager.Get().OnResume -= OnResume_Event;
+        
+        var timeManager = GlobalGameManager.Instance.GetTimeManager();
+        
+        timeManager.OnPause -= OnPause_Event;
+        timeManager.OnResume -= OnResume_Event;
         SurvivalGameManager.Get().OnGameEnd -= OnGameEnd_Event;
     }
 
