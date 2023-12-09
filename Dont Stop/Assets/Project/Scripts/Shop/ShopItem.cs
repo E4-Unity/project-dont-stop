@@ -22,6 +22,7 @@ public class ShopItem : MonoBehaviour
     
     /* 컴포넌트 */
     PlayerState m_PlayerState;
+    UISoundManager m_UISoundManager;
     
     /* 필드 */
     IShopItem m_ShopItem;
@@ -30,6 +31,7 @@ public class ShopItem : MonoBehaviour
     void Awake()
     {
         m_PlayerState = GlobalGameManager.Instance.GetPlayerState();
+        m_UISoundManager = GlobalGameManager.Instance.GetUISoundManager();
     }
     
     void OnEnable()
@@ -91,7 +93,7 @@ public class ShopItem : MonoBehaviour
             if (inventory.AddItem(m_ItemDefinition))
             {
                 inventory.Gold -= m_ShopItem.Cost;
-                SystemAudioManager.Get().PlaySelectButton();
+                m_UISoundManager.PlaySound(EUISoundType.SelectButton);
                 Destroy(gameObject);
             }
         }

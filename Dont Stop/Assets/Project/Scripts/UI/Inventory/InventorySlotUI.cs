@@ -4,11 +4,9 @@ using UnityEngine.UI;
 
 public class InventorySlotUI : MonoBehaviour
 {
-    #region Component
-
+    /* 컴포넌트 */
+    UISoundManager soundManager;
     Image m_DisplayIcon;
-
-    #endregion
 
     #region State
 
@@ -18,6 +16,11 @@ public class InventorySlotUI : MonoBehaviour
     [SerializeField, ReadOnly] UGearData m_GearData;
 
     #endregion
+
+    void Awake()
+    {
+        soundManager = GlobalGameManager.Instance.GetUISoundManager();
+    }
 
     public void Init(UAttributeDataBase _data)
     {
@@ -29,7 +32,7 @@ public class InventorySlotUI : MonoBehaviour
     public void Equip()
     {
         GlobalGameManager.Instance.GetPlayerState().GetInventoryComponent().Equip(m_Data);
-        SystemAudioManager.Get().PlaySelectButton();
+        soundManager.PlaySound(EUISoundType.SelectButton);
     }
 
     void Refresh()

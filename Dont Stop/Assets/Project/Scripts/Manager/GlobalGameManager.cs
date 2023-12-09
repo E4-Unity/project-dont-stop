@@ -24,10 +24,12 @@ public class GlobalGameManager : E4.Utility.GenericMonoSingleton<GlobalGameManag
     SceneLoadingManager sceneLoadingManager;
     PlayerState playerState;
     TimeManager timeManager;
+    UISoundManager uiSoundManager;
 
     public SceneLoadingManager GetSceneLoadingManager() => sceneLoadingManager;
     public PlayerState GetPlayerState() => playerState;
     public TimeManager GetTimeManager() => timeManager;
+    public UISoundManager GetUISoundManager() => uiSoundManager;
 
     /* GenericMonoSingleton */
     protected override void Init()
@@ -41,6 +43,7 @@ public class GlobalGameManager : E4.Utility.GenericMonoSingleton<GlobalGameManag
         sceneLoadingManager = GetComponentInChildren<SceneLoadingManager>();
         playerState = GetComponentInChildren<PlayerState>();
         timeManager = GetComponentInChildren<TimeManager>();
+        uiSoundManager = GetComponentInChildren<UISoundManager>();
     }
     
     /* MonoBehaviour */
