@@ -2619,19 +2619,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8094667480489613995}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 8094667480489613993}
-        m_TargetAssemblyTypeName: RetryButton, Assembly-CSharp
-        m_MethodName: Retry
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &8094667480489613989
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2659,6 +2647,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 954a3f27b1ba26349ae0c18ead560eee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  soundType: 1
 --- !u!1 &8094667480500666963
 GameObject:
   m_ObjectHideFlags: 0
@@ -6872,18 +6861,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 8094667481392351046}
-        m_TargetAssemblyTypeName: ChangeSceneButton, Assembly-CSharp
-        m_MethodName: ChangeScene
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &8094667481392351045
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6911,6 +6888,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 102147b804e2b1d4eb5b6d5124e00368, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  soundType: 1
   m_TargetScene: 1
   m_TransitionType: 1
 --- !u!1 &8094667481400065565
