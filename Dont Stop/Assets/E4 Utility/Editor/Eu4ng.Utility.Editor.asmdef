@@ -1,0 +1,20 @@
+{
+    "name": "Eu4ng.Utility.Editor",
+    "rootNamespace": "E4.Utility",
+    "references": [
+        "GUID:ee9a24cf48d118d45b3bf2d8716de846"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "UNITY_EDITOR"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

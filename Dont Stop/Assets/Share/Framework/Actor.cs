@@ -5,6 +5,9 @@ namespace Framework
 {
     public abstract class BaseObject : MonoBehaviour
     {
+        /* 필드 */
+        bool isEventBound;
+        
         /*
          * 레퍼런스 할당 혹은 초기값 설정을 수동으로 할 필요가 있는 경우 true 체크
          * Awake와 OnDisable에서 enabled = false를 자동으로 호출한다.
@@ -102,18 +105,37 @@ namespace Framework
             InitializeComponent();
             
             // 이벤트 구독
-            BindEventFunctions();
+            if (!isEventBound) // 중복 호출 방지
+            {
+                isEventBound = true;
+                BindEventFunctions();
+            }
+            
             OnEnable_Event();
         }
 
         protected void OnDisable()
         {
-            // OnPause_Event가 발생한 경우에는 OnEnable 무시
+            // OnPause_Event가 발생한 경우에는 OnDisable 무시
             if (m_IsPaused) return;
             
             // 이벤트 구독 해지
-            UnbindEventFunctions();
+            if (isEventBound)
+            {
+                isEventBound = false; // 중복 호출 방지
+                UnbindEventFunctions();
+            }
             OnDisable_Event();
+        }
+
+        void OnDestroy()
+        {
+            // 이벤트 구독 해지
+            if (isEventBound)
+            {
+                isEventBound = false; // 중복 호출 방지
+                UnbindEventFunctions();
+            }
         }
 
         #endregion
