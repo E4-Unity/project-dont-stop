@@ -22,7 +22,7 @@ public class Gold : MonoBehaviour
     {
         if (_other.CompareTag("Player"))
         {
-            SurvivalGameState.Get().Gold += m_Gold;
+            SurvivalGameState.Instance.Gold += m_Gold;
             Destroy(gameObject);
         }
     }

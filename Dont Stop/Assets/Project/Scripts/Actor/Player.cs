@@ -72,7 +72,7 @@ public class Player : Actor
     // 초기화
     void Init()
     {
-        m_Speed *= SurvivalGameState.Get().GetStatsComponent().TotalStats.MovementSpeed;
+        m_Speed *= SurvivalGameState.Instance.GetStatsComponent().TotalStats.MovementSpeed;
         m_SpriteLibrary.spriteLibraryAsset = m_SpriteLibraryAssets[m_PlayerState.CharacterData.Definition.ID];
     }
     

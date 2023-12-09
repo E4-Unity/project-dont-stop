@@ -10,7 +10,7 @@ public class SurvivalGameManager : GameManger
     
     #region Static
 
-    public new static SurvivalGameManager Get() => (SurvivalGameManager)GameManger.Get();
+    public new static SurvivalGameManager Get() => (SurvivalGameManager)GameManger.Instance;
 
     #endregion
     
@@ -97,7 +97,7 @@ public class SurvivalGameManager : GameManger
         
         //TODO 리팩토링 필요
         // 선택한 캐릭터 무기 사용
-        if(SurvivalGameState.Get().GetEquipmentComponent().WeaponData.WeaponType == EWeaponType.Melee)
+        if(SurvivalGameState.Instance.GetEquipmentComponent().WeaponData.WeaponType == EWeaponType.Melee)
             m_LevelUp_UI.Select(0);
         else
             m_LevelUp_UI.Select(1);
@@ -123,7 +123,7 @@ public class SurvivalGameManager : GameManger
     {
         base.OnGameEnd_Event();
         AudioManager.Get().PlayBgm(false);
-        SurvivalGameState.Get().Exp = m_TotalExp;
+        SurvivalGameState.Instance.Exp = m_TotalExp;
 
         StartCoroutine(DelayGameFinish());
     }
@@ -137,7 +137,7 @@ public class SurvivalGameManager : GameManger
     protected override void OnGameExit_Event()
     {
         base.OnGameExit_Event();
-        Destroy(SurvivalGameState.Get());
+        Destroy(SurvivalGameState.Instance);
     }
 
     #endregion
@@ -145,11 +145,6 @@ public class SurvivalGameManager : GameManger
     #endregion
 
     #region Method
-    
-    protected override void FindAllSingletons()
-    {
-        SurvivalGameState.FindInstance();
-    }
 
     void StageStart()
     {

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 
-public class PoolManager : GenericMonoSingleton<PoolManager>
+public class PoolManager : E4.Utility.GenericMonoSingleton<PoolManager>
 {
     #region Field
 
@@ -34,16 +34,16 @@ public class PoolManager : GenericMonoSingleton<PoolManager>
 
     public static T GetInstance<T>(GameObject _prefab)
     {
-        return Get().m_Prefabs.TryGetValue(_prefab, out var id)
-            ? Get().m_Pools[id].GetPool().Get().GetComponent<T>()
-            : Get().CreatePool(_prefab).Get().GetComponent<T>();
+        return Instance.m_Prefabs.TryGetValue(_prefab, out var id)
+            ? Instance.m_Pools[id].GetPool().Get().GetComponent<T>()
+            : Instance.CreatePool(_prefab).Get().GetComponent<T>();
     }
     
     public static GameObject GetInstance(GameObject _prefab)
     {
-        return Get().m_Prefabs.TryGetValue(_prefab, out var id)
-            ? Get().m_Pools[id].GetPool().Get()
-            : Get().CreatePool(_prefab).Get();
+        return Instance.m_Prefabs.TryGetValue(_prefab, out var id)
+            ? Instance.m_Pools[id].GetPool().Get()
+            : Instance.CreatePool(_prefab).Get();
     }
 
     public static void ReleaseInstance(GameObject _instance)
@@ -52,7 +52,7 @@ public class PoolManager : GenericMonoSingleton<PoolManager>
         if (tracker is null)
             Destroy(_instance);
         else
-            Get().m_Pools[tracker.PrefabID].GetPool().Release(_instance);
+            Instance.m_Pools[tracker.PrefabID].GetPool().Release(_instance);
     }
 
     #endregion

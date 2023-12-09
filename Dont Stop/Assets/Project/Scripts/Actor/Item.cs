@@ -39,7 +39,7 @@ public class Item : MonoBehaviour
         // Player Equipment Weapon 확인
         if (m_ItemType == EItemType.Weapon)
         {
-            var weaponData = SurvivalGameState.Get().GetEquipmentComponent().WeaponData;
+            var weaponData = SurvivalGameState.Instance.GetEquipmentComponent().WeaponData;
             if (weaponData is not null && m_WeaponData.WeaponType == weaponData.WeaponType)
                 m_WeaponData = weaponData;
         }
@@ -136,10 +136,10 @@ public class Item : MonoBehaviour
                     GameObject weaponObject = new GameObject(m_WeaponData.DisplayName);
                     m_Weapon = weaponObject.AddComponent<Weapon>();
                     m_Weapon.Init(m_WeaponData);
-                    SurvivalGameState.Get().GetSurvivalEquipmentComponent().AddWeapon(m_Weapon);
+                    SurvivalGameState.Instance.GetSurvivalEquipmentComponent().AddWeapon(m_Weapon);
                 }
                 else
-                    SurvivalGameState.Get().GetSurvivalEquipmentComponent().LevelUpWeapon(m_Weapon);
+                    SurvivalGameState.Instance.GetSurvivalEquipmentComponent().LevelUpWeapon(m_Weapon);
                 break;
             case EItemType.Gear:
                 if (m_Gear is null)
@@ -148,11 +148,11 @@ public class Item : MonoBehaviour
                     GameObject gearObject = new GameObject(m_GearData.DisplayName);
                     m_Gear = gearObject.AddComponent<Gear>();
                     m_Gear.Init(m_GearData);
-                    SurvivalGameState.Get().GetSurvivalEquipmentComponent().AddGear(m_Gear);
+                    SurvivalGameState.Instance.GetSurvivalEquipmentComponent().AddGear(m_Gear);
                 }
                 else
                 {
-                    SurvivalGameState.Get().GetSurvivalEquipmentComponent().LevelUpGear(m_Gear);
+                    SurvivalGameState.Instance.GetSurvivalEquipmentComponent().LevelUpGear(m_Gear);
                 }
                 break;
             case EItemType.Heal:

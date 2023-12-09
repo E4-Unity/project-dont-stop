@@ -36,7 +36,7 @@ public class HUD : MonoBehaviour
         m_Slider = GetComponent<Slider>();
         m_GameManager = SurvivalGameManager.Get();
         m_TimeManager = GlobalGameManager.Instance.GetTimeManager();
-        m_GameState = SurvivalGameState.Get();
+        m_GameState = SurvivalGameState.Instance;
     }
 
     void LateUpdate()

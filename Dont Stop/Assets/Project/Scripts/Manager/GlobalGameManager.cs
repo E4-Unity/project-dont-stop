@@ -32,9 +32,9 @@ public class GlobalGameManager : E4.Utility.GenericMonoSingleton<GlobalGameManag
     public UISoundManager GetUISoundManager() => uiSoundManager;
 
     /* GenericMonoSingleton */
-    protected override void Init()
+    protected override void InitializeComponent()
     {
-        base.Init();
+        base.InitializeComponent();
         
         // 모든 씬에서 사용
         DontDestroyOnLoad(gameObject);

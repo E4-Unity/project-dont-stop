@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public abstract class GameState<T> : GenericMonoSingleton<T> where T : GameState<T>
+public abstract class GameState<T> : E4.Utility.GenericMonoSingleton<T> where T : GameState<T>
 {
     // 씬 로드 전에 생성될 매니저 리스트
     [SerializeField] GameObject m_ManagerGroup;

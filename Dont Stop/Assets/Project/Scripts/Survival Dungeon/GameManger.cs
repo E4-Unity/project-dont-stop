@@ -1,6 +1,6 @@
 using System;
 
-public abstract class GameManger : GenericMonoSingleton<GameManger>
+public abstract class GameManger : E4.Utility.GenericMonoSingleton<GameManger>
 {
     #region Field
 
@@ -52,12 +52,6 @@ public abstract class GameManger : GenericMonoSingleton<GameManger>
 
     #endregion
 
-    #region Method
-
-    protected abstract void FindAllSingletons();
-
-    #endregion
-
     #region API
 
     public void GameEnter()
@@ -105,16 +99,6 @@ public abstract class GameManger : GenericMonoSingleton<GameManger>
     {
         OnGameExit?.Invoke();
         OnGameExit_Event();
-    }
-
-    #endregion
-
-    #region Monobehaviour
-
-    protected override void Awake()
-    {
-        base.Awake();
-        FindAllSingletons();
     }
 
     #endregion

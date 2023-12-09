@@ -45,12 +45,12 @@ public class Result : MonoBehaviour
         m_TextClearTime.text = $"{minutes:D2}:{seconds:D2}";
         
         // 전체 획득 경험치 표시
-        var killExp = SurvivalGameState.Get().Exp;
+        var killExp = SurvivalGameState.Instance.Exp;
         var bonusExp = m_IsClear ? Mathf.RoundToInt(killExp * 0.3f) : 0; // 게임 클리어 시 경험치 30% 추가 지급
         m_TextExp.text = $"EXP :{killExp}(+{bonusExp})";
 
         // 전체 획득 골드 표시
-        var dropGold = SurvivalGameState.Get().Gold;
+        var dropGold = SurvivalGameState.Instance.Gold;
         var bonusGold = m_IsClear ? dropGold / 2 : 0; // 게임 클리어 시 골드 50% 추가 지급
         m_TextGold.text = $"Gold:{dropGold}(+{bonusGold})";
     }

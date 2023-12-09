@@ -50,7 +50,7 @@ public class SurvivalEquipmentComponent : MonoBehaviour
             m_TotalAttributes += gear.GearData.Attribute;
         }
 
-        m_TotalAttributes += SurvivalGameState.Get().GetStatsComponent().TotalStats;
+        m_TotalAttributes += SurvivalGameState.Instance.GetStatsComponent().TotalStats;
     }
     
     void ApplyTotalAttributes(Weapon _weapon)

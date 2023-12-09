@@ -70,7 +70,7 @@ public class Gear : MonoBehaviour
 
     void SpeedUp()
     {
-        float speed = 3f * (SurvivalGameState.Get().GetStatsComponent().TotalStats.MovementSpeed + m_GearData.Attribute.MovementSpeed);
+        float speed = 3f * (SurvivalGameState.Instance.GetStatsComponent().TotalStats.MovementSpeed + m_GearData.Attribute.MovementSpeed);
         SurvivalGameManager.Get().GetPlayer().Speed = speed;
     }
 }

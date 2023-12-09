@@ -100,11 +100,11 @@ public class Weapon : MonoBehaviour
         switch (m_WeaponData.WeaponType)
         {
             case EWeaponType.Melee:
-                transform.Rotate(m_Speed * SurvivalGameState.Get().GetStatsComponent().TotalStats.AttackSpeed * Time.deltaTime * Vector3.back);
+                transform.Rotate(m_Speed * SurvivalGameState.Instance.GetStatsComponent().TotalStats.AttackSpeed * Time.deltaTime * Vector3.back);
                 break;
             default:
                 m_Timer += Time.deltaTime;
-                if (m_Timer > m_Speed / SurvivalGameState.Get().GetStatsComponent().TotalStats.AttackSpeed)
+                if (m_Timer > m_Speed / SurvivalGameState.Instance.GetStatsComponent().TotalStats.AttackSpeed)
                 {
                     m_Timer = 0;
                     Fire();
